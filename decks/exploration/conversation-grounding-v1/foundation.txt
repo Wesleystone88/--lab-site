@@ -1,0 +1,234 @@
+# ============================================================
+# νόησις — Foundation & Deck System Overview
+# Author: Timothy Wesley Stone
+# License: Open / Shareable
+# ============================================================
+
+This document establishes the canonical foundation for νόησις and its
+deck-based thinking systems. It exists to transfer context across chats,
+models, tools, and collaborators without loss of intent.
+
+This is not a product spec.
+This is not a single tool.
+This is the governing mental model.
+
+============================================================
+1. WHAT νόησις IS
+============================================================
+
+νόησις is the business and conceptual engine that unifies multiple
+thinking, design, and reasoning systems under a single philosophy.
+
+νόησις is NOT:
+- A single product
+- A single LLM tool
+- A single framework
+- A single deck
+
+νόησις IS:
+- A human-first cognitive engineering company
+- A system for turning thought into durable artifacts
+- A foundation that can run many engines, tools, and products over time
+
+Products (decks, FORGE, TGD, etc.) live UNDER νόησις.
+They are components, not the identity.
+
+============================================================
+2. CORE PHILOSOPHY
+============================================================
+
+- Humans own decisions
+- Structure prevents drift
+- Thinking is treated as engineering when outcomes matter
+- Not all thinking should be engineered
+- Tools must adapt to cognitive load, not the other way around
+- Plain text portability is a feature, not a limitation
+
+============================================================
+3. THE DECK SYSTEM (HIGH-LEVEL)
+============================================================
+
+νόησις uses "decks" as portable thinking systems.
+
+A deck is:
+- A collection of cards
+- Each card is a self-contained artifact
+- Cards persist across time, tools, and LLM sessions
+
+There are MULTIPLE deck families.
+They do NOT follow the same rules.
+
+============================================================
+4. THE CRITICAL DISTINCTION: DECK MODES
+============================================================
+
+Decks are classified by *cognitive mode*, not by version number.
+
+There are TWO canonical modes:
+
+------------------------------------------------------------
+A) ENGINEERING MODE (Technical / Power User Decks)
+------------------------------------------------------------
+
+Audience:
+- Engineers
+- Researchers
+- System designers
+- Technical builders
+
+Purpose:
+- Turn ideas into buildable, auditable systems
+
+Properties:
+- Ordered cards
+- Explicit gates
+- Upstream / downstream rules
+- Completeness expectations
+- Drift detection
+- High rigor
+
+Examples:
+- Artifact Decks
+- Emergence Deck
+- Canonical Deck
+- System architecture decks
+- FORGE-related specs
+
+Two engineering decks currently exist:
+
+1) Emergence Deck (formerly v0.1)
+   - Used early
+   - Partial filling allowed
+   - Exploration inside structure
+   - Lower enforcement
+   - Still ordered and gated
+
+2) Canonical Deck (formerly v1.0)
+   - Used when correctness matters
+   - Full specification required
+   - Strict gates
+   - Bulletproof logic before implementation
+
+These decks are TECHNICAL by design.
+They intentionally have a learning curve.
+
+------------------------------------------------------------
+B) EXPLORATION MODE (Everyday / Common User Decks)
+------------------------------------------------------------
+
+Audience:
+- General users
+- Non-technical users
+- Mixed-skill users
+- Early thinking stages
+
+Purpose:
+- Support thinking as it actually happens
+- Learn, explore, organize, reflect
+
+Properties:
+- No fixed order
+- Topic-based cards
+- Cards are independent
+- Contradictions allowed
+- Partial cards allowed forever
+- Discovery > enforcement
+
+These decks are NOT engineering tools.
+They are cognitive support tools.
+
+============================================================
+5. PACKAGE RULE (VERY IMPORTANT)
+============================================================
+
+The PACKAGE determines deck behavior.
+
+Engineering decks:
+- PackageType: Software / Research / System
+- DeckMode: Engineering
+- Structure: Ordered, gated
+
+Exploration decks:
+- PackageType: Knowledge / Learning / Life / Ideas
+- DeckMode: Exploration
+- Structure: Non-linear, topic-based
+
+Changing the PACKAGE changes the rules.
+The card system itself is not broken.
+
+============================================================
+6. CARD RULES BY MODE
+============================================================
+
+ENGINEERING MODE:
+- Cards are specifications
+- Cards must be complete
+- Gates apply
+- Order matters
+- Drift is an error
+
+EXPLORATION MODE:
+- Cards are thoughts, topics, questions, or tools
+- Cards may be incomplete
+- No gates
+- No required order
+- Drift is allowed
+
+Minimal Exploration Card Template:
+
+- Card Title
+- What this is about
+- Why it matters (optional)
+- Examples (optional)
+- Notes / thoughts
+- Related cards (optional)
+
+============================================================
+7. RELATIONSHIP BETWEEN MODES
+============================================================
+
+Exploration decks can FEED engineering decks.
+
+Engineering decks NEVER replace exploration decks.
+
+Flow:
+Exploration → Engineering
+(never the reverse)
+
+Exploration decks are never "upgraded".
+They remain loose forever.
+
+============================================================
+8. WHAT IS ALREADY BUILT
+============================================================
+
+- Artifact Deck system
+- Emergence Deck (Engineering Mode)
+- Canonical Deck (Engineering Mode)
+- Governance decisions (naming, gates, usage)
+- Branding under νόησις
+- Clear separation of business (νόησις) vs products
+
+============================================================
+9. WHAT IS BEING BUILT NEXT (IN OTHER CHAT)
+============================================================
+
+- Exploration Mode decks
+- Everyday user cards
+- Topic-based, non-linear structures
+- Lower cognitive load
+- Designed for learning and thinking, not system building
+
+These do NOT replace the Artifact Decks.
+They complement them.
+
+============================================================
+10. ONE-SENTENCE RULE
+============================================================
+
+Engineering decks enforce structure to build systems.
+Exploration decks support thinking without forcing outcomes.
+
+============================================================
+END OF FOUNDATION
+============================================================
