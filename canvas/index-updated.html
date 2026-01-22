@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>νόησις IDE Canvas</title>
+    <link rel="stylesheet" href="css/canvas.css">
+</head>
+<body>
+    <!-- TOP BAR -->
+    <div id="top-bar">
+        <div class="top-bar-left">
+            <a href="../site/index.html" class="home-link" title="Back to Home">νόησις</a>
+            <span id="workspace-name" contenteditable="true">Untitled Workspace</span>
+        </div>
+        <div class="top-bar-center">
+            <span id="mode-indicator">Navigate Mode</span>
+        </div>
+        <div class="top-bar-right">
+            <span id="validation-indicator" class="status-badge">Not Validated</span>
+            <button id="validate-btn" class="btn">Validate Graph</button>
+            <button id="snapshot-btn" class="btn btn-primary">Snapshot</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content">
+        <!-- LEFT FIELD -->
+        <div id="left-field">
+            <div class="field-header">
+                <h3>Nodes</h3>
+                <input type="text" id="node-search" placeholder="Filter..." />
+            </div>
+            <div id="node-list"></div>
+        </div>
+
+        <!-- CANVAS -->
+        <div id="canvas-container">
+            <svg id="canvas" width="100%" height="100%">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#2dd4bf" />
+                    </marker>
+                </defs>
+                <g id="edges-layer"></g>
+                <g id="nodes-layer"></g>
+            </svg>
+            
+            <!-- Context Menu -->
+            <div id="context-menu" class="context-menu hidden">
+                <div class="menu-item" data-action="spawn">Spawn Node</div>
+                <div class="menu-item" data-action="import">Import Card</div>
+                <div class="menu-item" data-action="bind-mode">Toggle Bind Mode</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM FIELD -->
+    <div id="bottom-field">
+        <div class="field-header">
+            <h3>Event Log</h3>
+            <button id="clear-log-btn" class="btn-small">Clear</button>
+        </div>
+        <div id="event-log"></div>
+    </div>
+
+    <!-- INSPECTOR MODAL -->
+    <div id="inspector-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Node Inspector</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="inspector-field">
+                    <label>Node ID:</label>
+                    <span id="inspector-id"></span>
+                </div>
+                <div class="inspector-field">
+                    <label>Seed:</label>
+                    <code id="inspector-seed"></code>
+                </div>
+                <div class="inspector-field">
+                    <label>Hash:</label>
+                    <code id="inspector-hash"></code>
+                </div>
+                <div class="inspector-field">
+                    <label>Version:</label>
+                    <span id="inspector-version"></span>
+                </div>
+                <div class="inspector-field">
+                    <label>State:</label>
+                    <span id="inspector-state"></span>
+                </div>
+                <div class="inspector-field">
+                    <label>Body:</label>
+                    <textarea id="inspector-body" rows="10"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-inspector-btn" class="btn btn-primary">Save Changes</button>
+                <button class="modal-close btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPAWN MODAL -->
+    <div id="spawn-modal" class="modal hidden">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Spawn Node</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="inspector-field">
+                    <label>Select Template:</label>
+                    <select id="template-select">
+                        <option value="CARD-00">CARD-00: Deck Schema</option>
+                        <option value="CARD-01" selected>CARD-01: Write-Up</option>
+                        <option value="CARD-02">CARD-02: Intent</option>
+                        <option value="CARD-03">CARD-03: Constraints</option>
+                        <option value="CARD-04">CARD-04: Architecture</option>
+                        <option value="CARD-05">CARD-05: Interface</option>
+                        <option value="CARD-06">CARD-06: Data</option>
+                        <option value="CARD-07">CARD-07: Dependency</option>
+                        <option value="CARD-08">CARD-08: Safety</option>
+                        <option value="CARD-09">CARD-09: Topology</option>
+                        <option value="CARD-10">CARD-10: Testing</option>
+                        <option value="CARD-11">CARD-11: Deployment</option>
+                        <option value="CARD-12">CARD-12: Style</option>
+                        <option value="CARD-13">CARD-13: Implementation</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="spawn-confirm-btn" class="btn btn-primary">Spawn</button>
+                <button class="modal-close btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMPORT CARD MODAL -->
+    <div id="import-modal" class="modal hidden">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Import Card</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="inspector-field">
+                    <label>Load from File:</label>
+                    <input type="file" id="card-file-input" accept=".md,.markdown" />
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 0.5rem;">
+                        Select a card .md file from decks/ directory
+                    </p>
+                </div>
+                <div id="card-preview" class="inspector-field" style="display: none;">
+                    <label>Card Preview:</label>
+                    <div style="background: var(--bg-tertiary); padding: 0.5rem; border-radius: 3px; font-family: var(--font-mono); font-size: 11px;">
+                        <div id="preview-id"></div>
+                        <div id="preview-name"></div>
+                        <div id="preview-seed"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="import-confirm-btn" class="btn btn-primary" disabled>Import</button>
+                <button class="modal-close btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/graph.js"></script>
+    <script src="js/canvas.js"></script>
+</body>
+</html>
