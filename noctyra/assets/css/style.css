@@ -1,0 +1,135 @@
+/* VøR — Noctyra Monster Deck Styling */
+
+:root {
+    --bg-primary: #0a0e14;
+    --bg-secondary: #151a21;
+    --text-primary: #e6e6e6;
+    --text-muted: #8a9199;
+    --accent-vor: #9d4edd;
+    --accent-mint: #10b981;
+    --border: #2a2f3a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.home-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.home-link:hover {
+    color: var(--accent-mint);
+}
+
+.tagline {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.lead {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.name-badge {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1.5rem;
+    margin: 2rem 0;
+}
+
+.formal {
+    color: var(--accent-vor);
+    font-weight: 600;
+}
+
+.shorthand {
+    color: var(--accent-mint);
+    font-weight: 600;
+}
+
+section {
+    margin-bottom: 4rem;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.placeholder {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 4rem 2rem;
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+}
+
+.protocol-info {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-left: 4px solid var(--accent-vor);
+    border-radius: 4px;
+}
+
+.protocol-info p {
+    margin-bottom: 0.5rem;
+}
+
+footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: var(--accent-mint);
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
