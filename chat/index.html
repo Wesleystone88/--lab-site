@@ -10,16 +10,135 @@
   <!-- KaTeX CSS for math rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
   <style>
+    :root {
+      --cyan: #2dd4bf;
+      --purple: #a78bfa;
+      --pink: #f472b6;
+      --bg-darker: #050810;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #0f172a;
+      background: var(--bg-darker);
       color: #f1f5f9;
       margin: 0;
       overflow: hidden;
+      position: relative;
     }
+
+    /* Animated gradient background matching landing page */
+    .gradient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background: linear-gradient(135deg, var(--bg-darker) 0%, #0f1419 25%, #1a1f2e 50%, #0f1419 75%, var(--bg-darker) 100%);
+      animation: gradientShift 15s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    .gradient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      top: 10%;
+      left: 20%;
+      width: 300px;
+      height: 300px;
+      background: var(--cyan);
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      top: 60%;
+      right: 10%;
+      width: 400px;
+      height: 400px;
+      background: var(--purple);
+      animation-delay: 5s;
+    }
+
+    .orb-3 {
+      bottom: 20%;
+      left: 50%;
+      width: 350px;
+      height: 350px;
+      background: var(--pink);
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    #root {
+      position: relative;
+      z-index: 1;
+    }
+
     /* Fix KaTeX color in dark mode */
     .katex { color: inherit; }
     .katex-display { margin: 1em 0; overflow-x: auto; overflow-y: hidden; }
+
+    /* Hide grid backgrounds - make futuristic */
+    [class*="grid"], [class*="lines"], [class*="background"], svg, canvas {
+      background-image: none !important;
+    }
+
+    /* Glassmorphic panels and cards */
+    [class*="container"], [class*="panel"], [class*="card"], [class*="section"],
+    [role="main"], [role="region"], aside, nav, section, main {
+      background: rgba(15, 20, 25, 0.3) !important;
+      backdrop-filter: blur(10px) !important;
+      border: 1px solid rgba(45, 212, 191, 0.1) !important;
+    }
+
+    /* Remove background images globally */
+    * {
+      background-image: none !important;
+    }
+
+    /* Futuristic input styling */
+    input, textarea, [contenteditable] {
+      background: rgba(15, 20, 25, 0.5) !important;
+      border: 1px solid rgba(45, 212, 191, 0.2) !important;
+      backdrop-filter: blur(8px) !important;
+      color: #f1f5f9;
+    }
+
+    /* Smooth transition on hover */
+    [class*="card"]:hover, [class*="button"]:hover, button:hover {
+      border-color: rgba(45, 212, 191, 0.3) !important;
+      backdrop-filter: blur(12px) !important;
+    }
+
+    /* Message bubbles glassmorphic */
+    [class*="message"], [class*="chat"], [class*="bubble"], [role="article"] {
+      background: rgba(15, 20, 25, 0.4) !important;
+      backdrop-filter: blur(8px) !important;
+      border: 1px solid rgba(45, 212, 191, 0.15) !important;
+      border-radius: 12px !important;
+    }
+
+    /* Sidebar futuristic */
+    aside, [class*="sidebar"], [class*="nav"] {
+      background: rgba(10, 14, 20, 0.4) !important;
+      backdrop-filter: blur(10px) !important;
+      border-right: 1px solid rgba(45, 212, 191, 0.1) !important;
+    }
   </style>
 
 <link rel="stylesheet" href="./index.css">
@@ -40,10 +159,18 @@
   <script type="module" crossorigin src="/chat/assets/index-D9LGvRcp.js"></script>
 </head>
 <body>
-  <!-- Back to Landing Page Button -->
+  <!-- Animated background matching landing page -->
+  <div class="gradient-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+  </div>
+
+  <!-- Back to Landing Page Button - Glassmorphism -->
   <div style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
-    <a href="/index.html" style="display: inline-block; padding: 10px 16px; background-color: #1e293b; color: #f1f5f9; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 500; border: 1px solid #334155; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.backgroundColor='#0f172a'; this.style.borderColor='#475569';" onmouseout="this.style.backgroundColor='#1e293b'; this.style.borderColor='#334155';">
-      ← Back to νóησις
+    <a href="/index.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: rgba(15, 20, 25, 0.6); backdrop-filter: blur(10px); color: #2dd4bf; text-decoration: none; border-radius: 50px; font-size: 14px; font-weight: 600; border: 1px solid rgba(45, 212, 191, 0.2); transition: all 0.3s; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);" onmouseover="this.style.borderColor='rgba(45, 212, 191, 0.4)'; this.style.boxShadow='0 6px 20px rgba(45, 212, 191, 0.3)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='rgba(45, 212, 191, 0.2)'; this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.3)'; this.style.transform='translateY(0)';">
+      <span>←</span>
+      <span>Back to νόησις</span>
     </a>
   </div>
   <div id="root"></div>
