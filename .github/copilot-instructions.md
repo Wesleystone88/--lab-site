@@ -4,13 +4,22 @@ Author: Timothy Wesley Stone
 Copyright © 2026 Timothy Wesley Stone. All Rights Reserved.
 
 ## What This Is
-A **portable markdown-based card system** that structures AI conversations and system specifications. Three complementary deck modes:
+A **portable markdown-based card system** for structuring AI conversations and system specifications. Plus complementary **React+Vite sidebar applications** for interacting with cards via Gemini API.
 
+### Dual Architecture
+
+**Core System** (markdown-based, no build):
 1. **Exploration Mode** ([Conversation Grounding Deck](decks/exploration/conversation-grounding-v1/)) — Everyday AI conversation management (13 cards, no order required)
 2. **Engineering Mode - Emergence** ([decks/engineering/emergence-v0.1/](decks/engineering/emergence-v0.1/)) — System design exploration (14 ordered cards, diagnostic gates)
 3. **Engineering Mode - Canonical** ([decks/engineering/canonical-v1.0/](decks/engineering/canonical-v1.0/)) — Authoritative specifications (12 ordered cards, strict gates)
 
-**Core principle**: Copy/paste markdown only. No engines, no builds, no dependencies. Each card is cryptographically seeded for tamper-evident identity.
+**Sidebar Applications** (React + Vite + Gemini):
+- Located in parallel workspaces: `copy-of-νόησις-chat/`, `noesis-workflow-engine-v0.1/`, `noesis-ram_-cognitive-memory-substrate/`
+- Each runs independently with `npm run dev` (Vite dev server on localhost)
+- All use Gemini API key for LLM interactions
+- Styled with lucide-react icons and react-markdown with math support
+
+**Core principle**: Card system = copy/paste markdown only, no dependencies. Cryptographically seeded for tamper-evident identity. Apps are optional tooling layer.
 
 ## Constitutional Rules ([docs/foundation/POLICY.md](docs/foundation/POLICY.md))
 
@@ -30,6 +39,63 @@ Every card has a `seed_identity` block with tamper-evident hash of its "spine" (
 
 ### 4. Templates
 Templates are deck-agnostic ([decks/templates/](decks/templates/)). Usage strictness depends on deck mode.
+
+---
+
+## Sidebar Applications (React + Vite + Gemini)
+
+**Three independent apps** in parallel workspaces, each with identical architecture:
+
+### Development Workflow
+
+**Setup** (same for all three):
+```bash
+cd copy-of-νόησις-chat/  # or workflow-engine or ram-substrate
+npm install
+# Set GEMINI_API_KEY in .env.local (required to run)
+npm run dev     # Start Vite dev server on http://localhost:5173
+npm run build   # Production bundle
+npm run preview # Preview built version locally
+```
+
+### Key Architecture Patterns
+
+**File Structure** (consistent across all apps):
+```
+├── index.tsx              # Entry point (React 19)
+├── App.tsx                # Root component
+├── types.ts               # TypeScript interfaces
+├── vite.config.ts         # Vite configuration
+├── services/
+│   ├── geminiService.ts   # Google Gemini API wrapper
+│   └── [app-specific services]
+├── components/
+│   ├── ChatMessage.tsx    # Common: Render AI/user messages
+│   ├── TemplateSelector.tsx # Common: Pick deck cards
+│   └── [app-specific components]
+└── assets/                # CSS, images
+```
+
+**Dependencies** (standard across apps):
+- `react` (^19.2+) & `react-dom`
+- `@google/genai` (^1.38+) — Gemini API client
+- `lucide-react` (^0.56+) — Icon library
+- `react-markdown` (^9.0+) with `remark-math` & `rehype-katex` — MD + math rendering
+- Vite + TypeScript for dev/build tooling
+
+**Gemini API Integration**:
+- All apps wrap `@google/genai` in `geminiService.ts`
+- Expects `GEMINI_API_KEY` in `.env.local`
+- Pattern: `generateResponse(prompt, systemMessage?)` → Promise<string>
+- Math rendering via KaTeX for LaTeX in responses
+
+### App-Specific Purposes
+
+| App | Purpose | Key Component |
+|-----|---------|---------------|
+| `copy-of-νόησις-chat` | Deck card chat interface | `TemplateSelector.tsx` loads CARD files |
+| `noesis-workflow-engine-v0.1` | Workflow orchestration | Canvas-based card flow visualization |
+| `noesis-ram_-cognitive-memory-substrate` | Memory/context persistence | `MemoryExplorer.tsx` for session state |
 
 ---
 
@@ -67,6 +133,25 @@ Check `Gate` section:
 - **ERROR**: Blocks downstream work (Canonical), signals risk (Emergence)
 - **WARNING**: Advisory only (v0.1 specific)
 - **INFO**: Guidance (v0.1 specific)
+
+### Working with Python Tools
+**Required**: Python 3.7+, `pyyaml` (installed via `pip install pyyaml`)
+
+**Common Operations**:
+```bash
+# Add/verify cryptographic seeds on all cards
+cd noesis-workspace
+python tools/seed-generator.py add decks/engineering/emergence-v0.1/cards/
+python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/
+
+# View card relationships and dependency graph
+python tools/view-graph.py .
+
+# Check individual card
+python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/00_CARD-00_DECK_SCHEMA_Meta_Card.md
+```
+
+**When seeding is important**: Any time you edit card YAML front matter (dependencies, gates, ordering), re-run verification to detect tampering.
 
 ---
 
@@ -542,6 +627,112 @@ When content stabilizes in Emergence Deck, it may be promoted to Canonical:
 5. **Promotion is manual** — never auto-promote from Emergence to Canonical
 6. **Templates are neutral** — usage strictness depends on deck context
 7. **Card identity matters** — DeckName/DeckMode must be updated if cards move
+
+---
+
+## Cross-Workspace Integration Patterns
+
+### Card System → Sidebar Apps
+- Deck cards are the **source of truth** for system specifications
+- Apps in `copy-of-νόησις-chat/`, `noesis-workflow-engine-v0.1/`, etc. **display and interact with** deck cards
+- Use `TemplateSelector.tsx` pattern to load `.md` card files and render them
+- Never hardcode deck content into React components — reference card files
+
+### Managing Gemini API Keys Across Apps
+- Each app has its own `.env.local` file (gitignored)
+- Pattern: `GEMINI_API_KEY=your_key_here`
+- All three apps expect identical structure in `geminiService.ts`
+- If adding new app: copy `geminiService.ts` from `copy-of-νόησις-chat/` as template
+
+### Development Workflow (Multi-Workspace)
+**Sequential startup** (recommended):
+```bash
+# Terminal 1: Main noesis-workspace for card editing
+cd c:\Users\timmy\OneDrive\Desktop\noesis-workspace
+# Edit cards, run Python tools, manage structure
+
+# Terminal 2: Sidebar app dev server
+cd c:\Users\timmy\Downloads\copy-of-νóησις-chat
+npm run dev  # Vite dev server on :5173
+
+# Terminal 3: (optional) Another sidebar app
+cd c:\Users\timmy\Downloads\noesis-workflow-engine-v0.1
+npm run dev  # Vite dev server on :5174 (auto-incremented)
+```
+
+### Common Editing Patterns
+
+**Pattern 1: Edit card, verify seed**
+```bash
+# Edit a card file (e.g., change dependencies, gate logic)
+nano decks/engineering/emergence-v0.1/cards/02_CARD-02_INTENT_Compiled_Meaning.md
+
+# Verify seed hasn't been tampered with
+python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/02_CARD-02_INTENT_Compiled_Meaning.md
+```
+
+**Pattern 2: Update card references in sidebar app**
+- Load card markdown from `decks/*/cards/*.md`
+- Parse YAML front matter for metadata
+- Render body with `react-markdown` + KaTeX
+- Don't cache card content — apps should fetch fresh on each session
+
+**Pattern 3: Add new Vite app to workspace**
+1. Create new folder: `noesis-new-app/`
+2. Copy structure from `copy-of-νóησις-chat/` (package.json, vite.config.ts, index.tsx, etc.)
+3. Copy `geminiService.ts` wrapper pattern
+4. Update `package.json` name field
+5. Create `.env.local` with `GEMINI_API_KEY`
+6. Run `npm install && npm run dev`
+
+---
+
+## Troubleshooting Workflows
+
+### Seed Verification Fails
+- **Cause**: Card YAML front matter was edited without re-running `seed-generator.py`
+- **Fix**: `python tools/seed-generator.py add decks/engineering/emergence-v0.1/cards/{card_file}` to regenerate seed
+- **Preventive**: Run verification after any `dependencies`, `gate`, or `ordering` field edits
+
+### Vite App Won't Start
+- **Cause 1**: `GEMINI_API_KEY` not set in `.env.local`
+- **Fix 1**: Create `.env.local` in app root with `GEMINI_API_KEY=abc123...`
+- **Cause 2**: Port 5173 already in use
+- **Fix 2**: Kill process on port 5173 or start second app (Vite auto-increments to 5174)
+
+### Card Dependencies Circular
+- **Symptom**: `view-graph.py` reports circular reference
+- **Fix**: Edit `dependencies.upstream` or `dependencies.downstream` to break cycle
+- **Validate**: Run `python tools/view-graph.py .` to confirm
+
+### App Can't Load Card Content
+- **Cause 1**: Card file path in code is absolute instead of relative to workspace
+- **Cause 2**: Card YAML front matter parsing failed
+- **Debug**: Log raw file content and YAML parse errors in `geminiService.ts`
+
+---
+
+## File Organization Conventions
+
+### Naming in Emergence Deck (v0.1)
+```
+{order:02d}_CARD-{id}_{SECTION}_{description}.md
+Example: 02_CARD-02_INTENT_Compiled_Meaning.md
+```
+
+### Naming in Canonical Deck (v1.0)
+```
+{order:02d}_CARD-{id}_{SECTION}_{description}.md
+Example: 02_CARD-2_INTENT_System_Intent_Anchor.md
+```
+Note: Canonical uses CARD-0, CARD-1, etc. (no zero-padding in ID)
+
+### Custom Project Decks
+When users create new decks from templates:
+- Follow naming convention: `{number}_CARD-{id}_...`
+- Update `namespace` field in YAML to avoid collisions
+- Increment version in `card.version` field
+- Re-run seeding: `python tools/seed-generator.py add {custom_deck_path}`
 
 ---
 

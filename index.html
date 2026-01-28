@@ -3,254 +3,679 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>νόησις — Deterministic Cognitive Substrate</title>
-    <meta name="description" content="A deterministic cognitive substrate for structured intelligence. Artifacts have identity. Structure has memory. Systems evolve by design.">
-    <link rel="stylesheet" href="assets/css/style-terminal.css">
+    <title>νόησις — Intelligence, Engineered</title>
+    <meta name="description" content="Structure your thinking. Build intelligence that persists. νόησις is the cognitive substrate for the future.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cyan: #2dd4bf;
+            --purple: #a78bfa;
+            --pink: #f472b6;
+            --blue: #60a5fa;
+            --bg-dark: #0a0e14;
+            --bg-darker: #050810;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, #0f1419 25%, #1a1f2e 50%, #0f1419 75%, var(--bg-darker) 100%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            top: 10%;
+            left: 20%;
+            width: 300px;
+            height: 300px;
+            background: var(--cyan);
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            top: 60%;
+            right: 10%;
+            width: 400px;
+            height: 400px;
+            background: var(--purple);
+            animation-delay: 5s;
+        }
+
+        .orb-3 {
+            bottom: 20%;
+            left: 50%;
+            width: 350px;
+            height: 350px;
+            background: var(--pink);
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(10, 14, 20, 0.8);
+            border-bottom: 1px solid rgba(45, 212, 191, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-cta {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: var(--bg-dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(45, 212, 191, 0.5);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 3rem;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: var(--bg-dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(45, 212, 191, 0.4);
+            animation: fadeInUp 1s ease 0.6s backwards;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(45, 212, 191, 0.6);
+        }
+
+        .chat-preview-section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .chat-mockup {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(15, 20, 25, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(45, 212, 191, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+        }
+
+        .chat-mockup:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(45, 212, 191, 0.3);
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            background: rgba(45, 212, 191, 0.1);
+            border-bottom: 1px solid rgba(45, 212, 191, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--cyan);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .chat-title {
+            font-weight: 600;
+            color: var(--cyan);
+        }
+
+        .chat-messages {
+            padding: 2rem;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-size: 0.875rem;
+        }
+
+        .message-content {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: rgba(45, 212, 191, 0.05);
+            border: 1px solid rgba(45, 212, 191, 0.1);
+            border-radius: 15px;
+        }
+
+        .message.ai .message-content {
+            background: rgba(167, 139, 250, 0.05);
+            border-color: rgba(167, 139, 250, 0.1);
+        }
+
+        .message-label {
+            font-size: 0.875rem;
+            color: var(--cyan);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .message.ai .message-label {
+            color: var(--purple);
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(167, 139, 250, 0.1);
+            border-radius: 15px;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--purple);
+            animation: typing 1.4s ease infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-10px); }
+        }
+
+        .features {
+            padding: 6rem 2rem;
+            background: rgba(10, 14, 20, 0.5);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: rgba(15, 20, 25, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(45, 212, 191, 0.1);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(45, 212, 191, 0.3);
+            box-shadow: 0 10px 30px rgba(45, 212, 191, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            padding: 8rem 2rem;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-section p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(45, 212, 191, 0.1);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 1rem 3rem;
+            }
+            
+            .chat-mockup {
+                border-radius: 15px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- HERO SECTION -->
+    <div class="gradient-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <header>
+        <nav>
+            <div class="logo">νόησις</div>
+            <a href="/chat" class="nav-cta">Launch Chat →</a>
+        </nav>
+    </header>
+
     <section class="hero">
-        <div class="container">
-            <h1 class="hero-title">νόησις</h1>
-            <p class="hero-subtitle">A deterministic cognitive substrate for structured intelligence.</p>
-            <p class="hero-signal">Artifacts have identity. Structure has memory. Systems evolve by design.</p>
-            <div class="hero-description">
-                <p>νόησις is an experimental system for constructing persistent reasoning artifacts — objects that can be seeded, addressed, composed, and evolved across time.</p>
-                <p>Rather than treating intelligence as transient text, νόησις treats thinking as an engineered field: structured, reproducible, and governed by explicit constraints.</p>
-                <p>This site exposes the first public layer of that system.</p>
-            </div>
+        <div class="hero-content">
+            <h1>Intelligence, Engineered</h1>
+            <p class="hero-subtitle">Structure your thinking. Build intelligence that persists. Work with artifacts that have memory.</p>
+            <a href="/chat" class="hero-cta">
+                <span>Experience νόησις</span>
+                <span>→</span>
+            </a>
         </div>
     </section>
 
-    <!-- LIVE SUBSTRATE -->
-    <section class="section">
+    <section class="chat-preview-section">
         <div class="container">
-            <h2>Live Substrate</h2>
-            <div class="panel">
-                <p>The current public release consists of <strong>artifact decks</strong> — deterministic cards that function as lightweight computational objects inside human–AI workflows.</p>
-                <p>Each card:</p>
-                <ul class="feature-list">
-                    <li>Has a stable cryptographic identity</li>
-                    <li>Is seeded with a spline spine</li>
-                    <li>Exists as a node in a graph</li>
-                    <li>Can be addressed and composed</li>
-                    <li>Evolves deterministically from its seed</li>
-                </ul>
-                <p>These artifacts already behave like a minimal execution layer, even without higher automation tooling.</p>
-                <p>They are intentionally portable, inspectable, and copy‑driven.</p>
-                <p class="emphasis">No runtime required.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ARTIFACTS NOT PROMPTS -->
-    <section class="section section-contrast">
-        <div class="container">
-            <h2>Artifacts, Not Prompts</h2>
-            <p class="section-intro">Traditional prompting treats intelligence as disposable text. νόησις treats intelligence as <strong>persistent objects</strong>.</p>
+            <h2 class="section-title">See It In Action</h2>
+            <p class="section-subtitle">Real-time reasoning with structured intelligence. No more context loss.</p>
             
-            <div class="contrast-grid">
-                <div class="contrast-column">
-                    <h3>An artifact card is NOT:</h3>
-                    <ul>
-                        <li>A template</li>
-                        <li>A macro</li>
-                        <li>A prompt trick</li>
-                        <li>A chat shortcut</li>
-                    </ul>
+            <div class="chat-mockup">
+                <div class="chat-header">
+                    <div class="chat-status"></div>
+                    <div class="chat-title">νόησις Chat • Live</div>
                 </div>
-                <div class="contrast-column">
-                    <h3>An artifact card IS:</h3>
-                    <ul>
-                        <li>With identity</li>
-                        <li>With topology</li>
-                        <li>With constraints</li>
-                        <li>With evolution rules</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="panel">
-                <p>Cards accumulate structure instead of losing context.</p>
-                <p>They behave more like components in a system graph than sentences in a chat log.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SYSTEM TOPOLOGY -->
-    <section class="section">
-        <div class="container">
-            <h2>Topology</h2>
-            <div class="panel">
-                <p class="emphasis">Artifacts form directed graphs.</p>
-                <p>Edges encode dependency, inheritance, constraint flow, and semantic lineage.</p>
-                
-                <p><strong>Graph structure allows:</strong></p>
-                <ul class="feature-list">
-                    <li>Explicit reasoning paths</li>
-                    <li>Reproducible composition</li>
-                    <li>Auditable evolution</li>
-                    <li>Deterministic replay</li>
-                </ul>
-
-                <p class="emphasis">The graph is the memory.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SEED + SPLINE -->
-    <section class="section section-contrast">
-        <div class="container">
-            <h2>Identity and Continuity</h2>
-            <div class="panel">
-                <p class="emphasis">Every artifact is born from a seed.</p>
-                
-                <p>The seed anchors:</p>
-                <ul class="feature-list">
-                    <li>Identity</li>
-                    <li>Structural invariants</li>
-                    <li>Evolution constraints</li>
-                </ul>
-
-                <p>A spline spine governs how the artifact grows over time without losing coherence.</p>
-                
-                <div class="terminal-block">
-                    <code>Same seed → same structural behavior.</code>
-                </div>
-
-                <p>No silent drift.</p>
-                <p>No hidden mutation.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- CURRENT DECKS -->
-    <section class="section">
-        <div class="container">
-            <h2>Available Artifact Decks</h2>
-            
-            <div class="decks-grid">
-                <div class="deck-module">
-                    <h3>Exploration Deck</h3>
-                    <p>A flexible grounding layer for managing long‑form AI cognition.</p>
-                    <ul>
-                        <li>Non‑linear</li>
-                        <li>Persistent</li>
-                        <li>Designed to stabilize reasoning across sessions</li>
-                    </ul>
-                </div>
-
-                <div class="deck-module">
-                    <h3>Emergence Deck</h3>
-                    <p>A structured exploratory pipeline for system ideation.</p>
-                    <ul>
-                        <li>Sequential</li>
-                        <li>Diagnostic gates</li>
-                        <li>Allows partial artifacts while mapping design space</li>
-                    </ul>
-                </div>
-
-                <div class="deck-module">
-                    <h3>Canonical Deck</h3>
-                    <p>A strict specification pipeline for finalized systems.</p>
-                    <ul>
-                        <li>Binding gates</li>
-                        <li>Complete artifacts only</li>
-                        <li>Designed for preservation and authority</li>
-                    </ul>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message">
+                        <div class="message-avatar">You</div>
+                        <div class="message-content">
+                            <div class="message-label">User</div>
+                            <p>Help me design a distributed system with deterministic behavior</p>
+                        </div>
+                    </div>
+                    <div class="message ai">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">
+                            <div class="message-label">νόησις</div>
+                            <p>I'll structure this using artifact decks. First, let's establish your constraints and load the Canonical Deck for system design...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- EVOLUTION PATH -->
-    <section class="section section-contrast">
+    <section class="features fade-in">
         <div class="container">
-            <h2>System Trajectory</h2>
-            <div class="panel">
-                <p>The decks represent the public substrate.</p>
-                <p><strong>Current tooling:</strong></p>
-                <ul class="feature-list">
-                    <li><strong>Canvas IDE (MVP)</strong> — Interactive graph workspace for seeded artifacts</li>
-                </ul>
-                <p><strong>Future layers under development:</strong></p>
-                <ul class="feature-list">
-                    <li><strong>Forge</strong> — deterministic artifact compiler and IDE</li>
-                    <li>Visual graph authoring</li>
-                    <li>Automated execution pipelines</li>
-                    <li>Advanced cognitive routing systems</li>
-                </ul>
-                <p class="emphasis">These layers will amplify — not replace — the existing artifact foundation.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- PHILOSOPHY -->
-    <section class="section">
-        <div class="container">
-            <h2>νόησις</h2>
-            <div class="panel">
-                <p>νόησις (νόησις) refers to the act of understanding itself — not information, not data, but structured comprehension.</p>
-                <p>The system is built on a single premise:</p>
-                <blockquote class="philosophy-quote">
-                    Intelligence should be engineered, not improvised.
-                </blockquote>
-            </div>
-        </div>
-    </section>
-
-    <!-- ACCESS / ENTRY POINT -->
-    <section class="section section-contrast">
-        <div class="container">
-            <h2>Access</h2>
-            <div class="panel">
-                <p>Artifact decks are openly available for experimentation and use.</p>
-                <p>They require no tooling.</p>
-                <p>They scale naturally into future infrastructure.</p>
-                <div class="cta-links">
-                    <a href="https://github.com/Wesleystone88/--lab-site" class="cta-link" target="_blank" rel="noopener">Explore the Repository</a>
-                    <a href="#system-docs" class="cta-link">Study the Artifacts</a>
-                    <a href="chat/index.html" class="cta-link">Launch νόησις Chat</a>
+            <h2 class="section-title">Why νόησις?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧬</div>
+                    <h3>Persistent Memory</h3>
+                    <p>Artifacts don't forget. Cryptographic identity ensures your reasoning persists across sessions.</p>
                 </div>
-                <p class="emphasis">Build with structure.</p>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Graph Intelligence</h3>
+                    <p>Reasoning as a directed graph. Dependencies are explicit. Evolution is auditable.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Zero Drift</h3>
+                    <p>Deterministic behavior. Same seed, same output. No silent mutations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Structured Thinking</h3>
+                    <p>Move from chat logs to cognitive systems. Build intelligence that scales.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>Portable & Open</h3>
+                    <p>Pure markdown. No runtime lock-in. Inspectable, shareable, yours.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>AI-Powered</h3>
+                    <p>Integrated with Gemini API. Markdown, math, and real-time reasoning.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- SYSTEM DOCUMENTATION -->
-    <section class="section" id="system-docs">
+    <section class="cta-section fade-in">
         <div class="container">
-            <h2>System Documentation</h2>
-            <div class="docs-grid">
-                <a href="https://github.com/Wesleystone88/--lab-site" class="doc-link" target="_blank" rel="noopener">
-                    <strong>Foundation</strong>
-                    <span>Core specifications and policies</span>
-                </a>
-                <a href="https://github.com/Wesleystone88/--lab-site" class="doc-link" target="_blank" rel="noopener">
-                    <strong>Seed System</strong>
-                    <span>Cryptographic identity specification</span>
-                </a>
-                <a href="https://github.com/Wesleystone88/--lab-site" class="doc-link" target="_blank" rel="noopener">
-                    <strong>Deck Selection</strong>
-                    <span>Choosing the right artifact mode</span>
-                </a>
-                <a href="https://github.com/Wesleystone88/--lab-site" class="doc-link" target="_blank" rel="noopener">
-                    <strong>Graph Topology</strong>
-                    <span>Understanding artifact relationships</span>
-                </a>
-            </div>
+            <h2>Ready to Think Different?</h2>
+            <p>Join the future of structured intelligence. Start building with νόησις today.</p>
+            <a href="/chat" class="hero-cta">Launch νόησις Chat</a>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="footer">
+    <footer>
         <div class="container">
             <p>Copyright © 2026 Timothy Wesley Stone. All Rights Reserved.</p>
-            <p class="footer-note">Individual artifact cards may be used and shared with attribution. The νόησις system, methodology, and brand are proprietary intellectual property.</p>
-            <p class="footer-attribution">Attribution: "Card from νόησις by Timothy Wesley Stone (noesis-lab.com)"</p>
+            <p style="margin-top: 0.5rem;">νόησις™ — Intelligence, Engineered</p>
         </div>
     </footer>
 
-    <script src="assets/js/main-terminal.js"></script>
+    <script>
+        let messageIndex = 2;
+        const messages = [
+            {
+                type: 'user',
+                text: 'Can I use this with my existing workflow?'
+            },
+            {
+                type: 'ai',
+                text: 'Absolutely. νόησις works with pure markdown. Copy artifacts into your tools, or use our chat interface for real-time reasoning.'
+            }
+        ];
+
+        function addMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.type}`;
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${message.type === 'user' ? 'You' : 'AI'}</div>
+                <div class="message-content">
+                    <div class="message-label">${message.type === 'user' ? 'User' : 'νόησις'}</div>
+                    <p>${message.text}</p>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">AI</div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        setInterval(() => {
+            if (messageIndex < messages.length) {
+                if (messages[messageIndex].type === 'ai') {
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        hideTypingIndicator();
+                        addMessage(messages[messageIndex]);
+                        messageIndex++;
+                    }, 2000);
+                } else {
+                    addMessage(messages[messageIndex]);
+                    messageIndex++;
+                }
+            } else {
+                setTimeout(() => {
+                    const chatMessages = document.getElementById('chatMessages');
+                    chatMessages.innerHTML = `
+                        <div class="message">
+                            <div class="message-avatar">You</div>
+                            <div class="message-content">
+                                <div class="message-label">User</div>
+                                <p>Help me design a distributed system with deterministic behavior</p>
+                            </div>
+                        </div>
+                        <div class="message ai">
+                            <div class="message-avatar">AI</div>
+                            <div class="message-content">
+                                <div class="message-label">νόησις</div>
+                                <p>I'll structure this using artifact decks. First, let's establish your constraints and load the Canonical Deck for system design...</p>
+                            </div>
+                        </div>
+                    `;
+                    messageIndex = 2;
+                }, 3000);
+            }
+        }, 5000);
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
