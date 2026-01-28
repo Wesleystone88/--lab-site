@@ -4,8 +4,8 @@
   # Publish from workspace root (where index.html lives)
   publish = "."
   
-  # Build the chat app before deploying
-  command = "cd chat && npm install && npm run build && cd .."
+  # No build needed - chat app uses import maps and loads from esm.sh CDN
+  command = ""
 
 # SPA-style routing for Chat app
 [[redirects]]
