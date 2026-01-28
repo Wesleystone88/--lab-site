@@ -1,0 +1,191 @@
+You are implementing the MVP of the νόησις IDE Canvas.
+
+This is not a diagram tool, not a flowchart editor, not a whiteboard, and not a visual prompt builder.
+
+It is a deterministic graph canvas where seeded artifact nodes exist as addressable computational objects.
+
+Follow this specification exactly. Do not invent features outside scope.
+
+----------------------------------------------------------------
+SYSTEM ONTOLOGY
+----------------------------------------------------------------
+
+The canvas represents a live graph rendered into perception space.
+
+Each visible node corresponds to:
+- A seeded artifact
+- A unique identity (hash)
+- A spine template
+- A mutable body
+- A version
+- A state (evolving / stable / frozen)
+- A position in the graph topology
+
+Edges represent typed semantic relationships (MVP supports only DEPENDENCY).
+
+The canvas is instrumentation, not decoration.
+
+----------------------------------------------------------------
+PRIMARY WORKFLOW (MUST WORK)
+----------------------------------------------------------------
+
+Scenario: User builds a minimal deterministic graph.
+
+1. User opens blank workspace.
+2. Canvas is empty, Navigate mode active.
+3. User spawns CARD-01 from template via context menu.
+4. Ghost node preview appears before commit.
+5. Node instantiates with:
+   - Seed
+   - Hash
+   - Version
+   - State = evolving
+6. User opens inspector and edits body.
+7. User spawns CARD-13.
+8. User binds CARD-01 → CARD-13 using DEPENDENCY edge.
+9. User edits CARD-13 body.
+10. User runs "Validate Graph".
+11. System validates constraints (simple validation OK for MVP).
+12. Node states become stable.
+13. User clicks "Snapshot / Freeze".
+14. Graph snapshot is saved and nodes become frozen.
+
+All steps must be visible in UI and logged.
+
+----------------------------------------------------------------
+CANVAS LAYOUT (TRI-FIELD)
+----------------------------------------------------------------
+
+Top Bar:
+- Workspace name
+- Mode indicator (Navigate / Bind)
+- Validation indicator
+- Snapshot button
+
+Left Field:
+- Node list (symbolic view)
+- Click highlights node on canvas
+- Search filter optional
+
+Main Canvas:
+- Infinite pan/zoom surface
+- Dark background
+- Nodes positioned spatially
+- Edges drawn between nodes
+
+Bottom Field:
+- Event log (system messages)
+- Validation results
+- Snapshot confirmations
+
+----------------------------------------------------------------
+NODE VISUAL DESIGN
+----------------------------------------------------------------
+
+Node displays:
+- Title (CARD-XX)
+- Short hash fragment
+- State dot:
+   - amber = evolving
+   - green = stable
+   - blue = frozen
+
+Node interactions:
+- Drag to move
+- Click to select
+- Double-click to open inspector modal
+
+----------------------------------------------------------------
+EDGE BEHAVIOR (MVP)
+----------------------------------------------------------------
+
+Edge type: DEPENDENCY only
+
+- Directed arrow A → B
+- Stored in graph model
+- Rendered visually
+- Validated during graph validation
+
+----------------------------------------------------------------
+CORE VERBS (IMPLEMENT ONLY THESE)
+----------------------------------------------------------------
+
+Spawn:
+- Right-click canvas → Spawn
+- Show ghost preview
+- Select template
+- Instantiate node
+
+Bind:
+- Switch to Bind mode
+- Click source node, then target node
+- Create dependency edge
+
+Inspect:
+- Modal showing:
+   - Seed
+   - Hash
+   - Version
+   - Editable body textarea
+
+Validate:
+- Button triggers graph validation
+- Mark nodes stable if valid
+
+Snapshot:
+- Save graph state to local storage
+- Mark nodes frozen
+
+----------------------------------------------------------------
+STATE MODEL
+----------------------------------------------------------------
+
+Persist:
+- Nodes (id, seed, hash, version, body, state, position)
+- Edges (source, target, type)
+- View state (pan, zoom optional)
+- Snapshots (versioned)
+
+Use localStorage for MVP persistence.
+
+----------------------------------------------------------------
+OUT OF SCOPE (DO NOT IMPLEMENT)
+----------------------------------------------------------------
+
+- Multiple edge types
+- Composition
+- Execution
+- Replay
+- Command palette
+- Multi-selection
+- Collaboration
+- Permissions
+- Fancy animations
+- Backend sync
+
+----------------------------------------------------------------
+TECH STACK GUIDANCE
+----------------------------------------------------------------
+
+- Frontend only
+- Use React if already present, otherwise vanilla JS acceptable
+- Canvas rendering can be SVG or HTML elements (no WebGL required)
+- Keep code readable and modular
+- Avoid heavy dependencies
+
+----------------------------------------------------------------
+DELIVERABLE
+----------------------------------------------------------------
+
+Working local MVP where user can:
+- Spawn nodes
+- Move nodes
+- Bind nodes
+- Inspect/edit nodes
+- Validate graph
+- Snapshot graph
+- Reload and restore state
+
+UI must reflect system state clearly.
+
+Do not add extra features beyond this spec.
