@@ -4,13 +4,13 @@
   # Publish from workspace root (where index.html lives)
   publish = "."
   
-  # No build command needed (static site)
-  command = ""
+  # Build the chat app before deploying
+  command = "cd chat && npm install && npm run build && cd .."
 
-# SPA-style routing for Canvas IDE
+# SPA-style routing for Chat app
 [[redirects]]
-  from = "/canvas/*"
-  to = "/canvas/index.html"
+  from = "/chat/*"
+  to = "/chat/index.html"
   status = 200
 
 # Fallback to root index.html for other routes
