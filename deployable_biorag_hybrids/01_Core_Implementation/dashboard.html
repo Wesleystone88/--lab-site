@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuintBioRAG — Production Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-card: #1c2128;
+    --bg-hover: #262c36;
+    --border: #30363d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --green: #3fb950;
+    --green-bg: rgba(63,185,80,0.15);
+    --red: #f85149;
+    --red-bg: rgba(248,81,73,0.15);
+    --blue: #58a6ff;
+    --blue-bg: rgba(88,166,255,0.12);
+    --amber: #d29922;
+    --amber-bg: rgba(210,153,34,0.15);
+    --purple: #bc8cff;
+    --cyan: #39d2c0;
+    --glow: 0 0 20px rgba(88,166,255,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .header {
+    text-align: center;
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header .subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .header .timestamp {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* Top stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1;
+    min-width: 180px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow);
+  }
+  .stat-card .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .stat-card .value {
+    font-size: 32px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat-card .value.green { color: var(--green); }
+  .stat-card .value.red { color: var(--red); }
+  .stat-card .value.blue { color: var(--blue); }
+  .stat-card .value.amber { color: var(--amber); }
+
+  /* Chart sections */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 900px) {
+    .chart-grid { grid-template-columns: 1fr; }
+  }
+
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+  }
+  .chart-card.full-width {
+    grid-column: 1 / -1;
+  }
+  .chart-card h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+  .chart-card h2 .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 8px;
+    font-weight: 500;
+  }
+  .badge.pass { background: var(--green-bg); color: var(--green); }
+  .badge.fail { background: var(--red-bg); color: var(--red); }
+
+  .download-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+  .download-btn:hover {
+    background: var(--blue-bg);
+    color: var(--blue);
+    border-color: var(--blue);
+  }
+
+  /* Suite results table */
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .results-table th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+  .results-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .results-table tr:last-child td { border-bottom: none; }
+  .results-table tr:hover td { background: var(--bg-hover); }
+
+  .icon-pass { color: var(--green); }
+  .icon-fail { color: var(--red); }
+
+  /* Canvas for charts */
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 320px;
+  }
+
+  /* Radar specific */
+  .radar-wrap canvas {
+    max-height: 360px;
+  }
+
+  /* Decision trace timeline */
+  .timeline {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    overflow-x: auto;
+  }
+  .timeline-item {
+    flex: 0 0 200px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+  }
+  .timeline-item.pass { border-left: 3px solid var(--green); }
+  .timeline-item.fail { border-left: 3px solid var(--red); }
+  .timeline-item .doc-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .timeline-item .detail {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+  .timeline-item .source-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .source-badge.cme { background: var(--amber-bg); color: var(--amber); }
+  .source-badge.gate { background: var(--green-bg); color: var(--green); }
+  .source-badge.bandit { background: var(--blue-bg); color: var(--blue); }
+  .source-badge.unbiased { background: rgba(188,140,255,0.15); color: var(--purple); }
+
+  /* File drop zone */
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 48px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 32px;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--blue);
+    background: var(--blue-bg);
+  }
+  .drop-zone h3 { color: var(--text-secondary); margin-bottom: 8px; }
+  .drop-zone p { color: var(--text-muted); font-size: 13px; }
+  .drop-zone input[type=file] { display: none; }
+
+  .hidden { display: none; }
+
+  /* No data state */
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>QuintBioRAG</h1>
+  <div class="subtitle">Production Readiness Dashboard</div>
+  <div class="timestamp" id="timestamp">Load a results.json to begin</div>
+</div>
+
+<!-- File Drop Zone -->
+<div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+  <h3>Drop results.json here</h3>
+  <p>or click to browse &mdash; generated by: <code>python quint_biorag_harness.py --suite all --json results.json</code></p>
+  <input type="file" id="fileInput" accept=".json">
+</div>
+
+<!-- Dashboard content (hidden until data loaded) -->
+<div id="dashboard" class="hidden">
+
+  <!-- Stats Bar -->
+  <div class="stats-bar" id="statsBar"></div>
+
+  <!-- Charts -->
+  <div class="chart-grid">
+    <!-- Suite Scorecard -->
+    <div class="chart-card" id="scorecardCard">
+      <h2>Suite Scorecard</h2>
+      <button class="download-btn" onclick="downloadChart('scorecardCanvas', 'suite_scorecard')">Save PNG</button>
+      <canvas id="scorecardCanvas"></canvas>
+    </div>
+
+    <!-- Pillar Health Radar -->
+    <div class="chart-card radar-wrap" id="radarCard">
+      <h2>Pillar Health</h2>
+      <button class="download-btn" onclick="downloadChart('radarCanvas', 'pillar_health')">Save PNG</button>
+      <canvas id="radarCanvas"></canvas>
+    </div>
+
+    <!-- Decision Trace Timeline -->
+    <div class="chart-card full-width" id="traceCard">
+      <h2>Integration Pipeline Trace</h2>
+      <button class="download-btn" onclick="downloadCard('traceCard', 'decision_trace')">Save PNG</button>
+      <div class="timeline" id="timeline">
+        <div class="empty-state">Run integration suite for trace data</div>
+      </div>
+    </div>
+
+    <!-- Full Results Table -->
+    <div class="chart-card full-width" id="tableCard">
+      <h2>Detailed Results</h2>
+      <button class="download-btn" onclick="downloadCard('tableCard', 'detailed_results')">Save PNG</button>
+      <table class="results-table" id="resultsTable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Test</th>
+            <th>Suite</th>
+            <th>Duration</th>
+            <th>Metrics</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- html2canvas for card-to-PNG -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA & STATE
+// ─────────────────────────────────────────────
+let DATA = null;
+let scorecardChart = null;
+let radarChart = null;
+
+// ─────────────────────────────────────────────
+// FILE INPUT
+// ─────────────────────────────────────────────
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+fileInput.addEventListener('change', e => {
+  if (e.target.files[0]) loadFile(e.target.files[0]);
+});
+
+function loadFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      DATA = JSON.parse(e.target.result);
+      render();
+    } catch (err) {
+      alert('Invalid JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function render() {
+  document.getElementById('dropZone').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  document.getElementById('timestamp').textContent = 'Run: ' + DATA.timestamp;
+
+  renderStats();
+  renderScorecard();
+  renderRadar();
+  renderTimeline();
+  renderTable();
+}
+
+// ── Stats Bar ──
+function renderStats() {
+  const bar = document.getElementById('statsBar');
+  const passRate = DATA.total > 0 ? (DATA.passed / DATA.total * 100).toFixed(0) : 0;
+  const totalDuration = DATA.results.reduce((s, r) => s + r.duration_ms, 0);
+  const suiteCount = new Set(DATA.results.map(r => r.suite)).size;
+  const failCount = DATA.total - DATA.passed;
+
+  bar.innerHTML = `
+    <div class="stat-card">
+      <div class="label">Pass Rate</div>
+      <div class="value ${passRate == 100 ? 'green' : 'amber'}">${passRate}%</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Tests</div>
+      <div class="value blue">${DATA.total}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Failing</div>
+      <div class="value ${failCount > 0 ? 'red' : 'green'}">${failCount}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Suites</div>
+      <div class="value blue">${suiteCount}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total Time</div>
+      <div class="value amber">${(totalDuration / 1000).toFixed(1)}s</div>
+    </div>
+  `;
+}
+
+// ── Suite Scorecard Bar Chart ──
+function renderScorecard() {
+  const suites = {};
+  DATA.results.forEach(r => {
+    if (!suites[r.suite]) suites[r.suite] = { pass: 0, fail: 0, duration: 0 };
+    suites[r.suite][r.passed ? 'pass' : 'fail']++;
+    suites[r.suite].duration += r.duration_ms;
+  });
+
+  const labels = Object.keys(suites);
+  const passData = labels.map(s => suites[s].pass);
+  const failData = labels.map(s => suites[s].fail);
+
+  const ctx = document.getElementById('scorecardCanvas').getContext('2d');
+  if (scorecardChart) scorecardChart.destroy();
+
+  scorecardChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels.map(l => l.toUpperCase()),
+      datasets: [
+        {
+          label: 'Passed',
+          data: passData,
+          backgroundColor: 'rgba(63,185,80,0.7)',
+          borderColor: '#3fb950',
+          borderWidth: 1,
+          borderRadius: 4,
+        },
+        {
+          label: 'Failed',
+          data: failData,
+          backgroundColor: 'rgba(248,81,73,0.7)',
+          borderColor: '#f85149',
+          borderWidth: 1,
+          borderRadius: 4,
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: { color: '#8b949e', font: { family: 'Inter' } }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { color: 'rgba(48,54,61,0.5)' },
+          ticks: { color: '#8b949e', stepSize: 1 }
+        },
+        y: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { color: '#e6edf3', font: { family: 'JetBrains Mono', size: 12 } }
+        }
+      }
+    }
+  });
+}
+
+// ── Pillar Health Radar ──
+function renderRadar() {
+  // Derive pillar health from test results
+  const pillars = { CME: 0.5, Bandit: 0.5, TFE: 0.5, PEE: 0.5, BioRAG: 0.5 };
+
+  DATA.results.forEach(r => {
+    const name = r.name.toLowerCase();
+    if (name.includes('cme') || name.includes('constraint'))
+      pillars.CME = r.passed ? Math.min(1, pillars.CME + 0.3) : Math.max(0, pillars.CME - 0.3);
+    if (name.includes('bandit') || name.includes('flip') || name.includes('recovery'))
+      pillars.Bandit = r.passed ? Math.min(1, pillars.Bandit + 0.3) : Math.max(0, pillars.Bandit - 0.3);
+    if (name.includes('tfe') || name.includes('stress') || name.includes('long_horizon'))
+      pillars.TFE = r.passed ? Math.min(1, pillars.TFE + 0.2) : Math.max(0, pillars.TFE - 0.3);
+    if (name.includes('pee') || name.includes('surprise') || name.includes('prediction'))
+      pillars.PEE = r.passed ? Math.min(1, pillars.PEE + 0.3) : Math.max(0, pillars.PEE - 0.3);
+    if (name.includes('biorag') || name.includes('rag') || name.includes('memory'))
+      pillars.BioRAG = r.passed ? Math.min(1, pillars.BioRAG + 0.3) : Math.max(0, pillars.BioRAG - 0.3);
+  });
+
+  const ctx = document.getElementById('radarCanvas').getContext('2d');
+  if (radarChart) radarChart.destroy();
+
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: Object.keys(pillars),
+      datasets: [{
+        label: 'Health',
+        data: Object.values(pillars).map(v => Math.round(v * 100)),
+        backgroundColor: 'rgba(88,166,255,0.15)',
+        borderColor: '#58a6ff',
+        borderWidth: 2,
+        pointBackgroundColor: Object.values(pillars).map(v =>
+          v >= 0.7 ? '#3fb950' : v >= 0.4 ? '#d29922' : '#f85149'
+        ),
+        pointRadius: 6,
+        pointHoverRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { color: '#6e7681', backdropColor: 'transparent', stepSize: 25 },
+          grid: { color: 'rgba(48,54,61,0.5)' },
+          pointLabels: {
+            color: '#e6edf3',
+            font: { family: 'JetBrains Mono', size: 13, weight: '600' }
+          },
+          angleLines: { color: 'rgba(48,54,61,0.5)' }
+        }
+      }
+    }
+  });
+}
+
+// ── Decision Trace Timeline ──
+function renderTimeline() {
+  const timeline = document.getElementById('timeline');
+  const integrationResults = DATA.results.filter(r => r.suite === 'integration');
+
+  if (integrationResults.length === 0) {
+    timeline.innerHTML = '<div class="empty-state">Run integration suite for trace data</div>';
+    return;
+  }
+
+  const r = integrationResults[0];
+  const docs = [];
+
+  // Parse doc metrics from the integration result
+  for (const [key, val] of Object.entries(r.metrics)) {
+    if (key.startsWith('doc')) {
+      const match = val.match(/^(\w+)\s*\((.+)\)$/);
+      if (match) {
+        docs.push({
+          label: key.toUpperCase(),
+          action: match[1],
+          source: match[2],
+        });
+      }
+    }
+  }
+
+  if (docs.length === 0) {
+    timeline.innerHTML = '<div class="empty-state">No trace data in integration results</div>';
+    return;
+  }
+
+  // Expected outcomes for the standard pipeline
+  const expectations = ['ACCEPT', 'REJECT', 'REJECT', 'ACCEPT'];
+
+  timeline.innerHTML = docs.map((d, i) => {
+    const expected = expectations[i] || '?';
+    const passed = d.action === expected;
+    const sourceClass = d.source.includes('CME') ? 'cme'
+      : d.source.includes('Gate') ? 'gate'
+      : d.source.includes('unbiased') ? 'unbiased'
+      : 'bandit';
+
+    return `
+      <div class="timeline-item ${passed ? 'pass' : 'fail'}">
+        <div class="doc-label">${d.label}</div>
+        <div class="detail">
+          Expected: ${expected}<br>
+          Got: ${d.action}<br>
+        </div>
+        <span class="source-badge ${sourceClass}">${d.source}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Detailed Results Table ──
+function renderTable() {
+  const tbody = document.getElementById('resultsBody');
+  tbody.innerHTML = DATA.results.map(r => {
+    const icon = r.passed
+      ? '<span class="icon-pass">&#10003;</span>'
+      : '<span class="icon-fail">&#10007;</span>';
+
+    const metricStr = Object.entries(r.metrics || {})
+      .slice(0, 4)
+      .map(([k,v]) => {
+        if (typeof v === 'number') return `${k}=${v.toFixed ? v.toFixed(3) : v}`;
+        return `${k}=${v}`;
+      })
+      .join('  ');
+
+    return `
+      <tr>
+        <td>${icon}</td>
+        <td style="color: var(--text-primary)">${r.name}</td>
+        <td style="color: var(--text-muted)">${r.suite}</td>
+        <td style="color: var(--amber)">${r.duration_ms.toFixed(0)}ms</td>
+        <td style="color: var(--text-secondary); font-size: 11px">${metricStr}</td>
+        <td style="color: var(--text-muted); font-size: 11px">${r.notes || ''}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────
+// PNG DOWNLOAD
+// ─────────────────────────────────────────────
+function downloadChart(canvasId, filename) {
+  const canvas = document.getElementById(canvasId);
+  // Create a new canvas with dark background
+  const tempCanvas = document.createElement('canvas');
+  const padding = 40;
+  tempCanvas.width = canvas.width + padding * 2;
+  tempCanvas.height = canvas.height + padding * 2;
+  const ctx = tempCanvas.getContext('2d');
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+  // Title
+  ctx.fillStyle = '#e6edf3';
+  ctx.font = '600 16px Inter, sans-serif';
+  ctx.fillText(filename.replace(/_/g, ' ').toUpperCase(), padding, 28);
+  // Timestamp
+  ctx.fillStyle = '#6e7681';
+  ctx.font = '12px JetBrains Mono, monospace';
+  ctx.fillText(DATA.timestamp, tempCanvas.width - 200, 28);
+  // Chart
+  ctx.drawImage(canvas, padding, padding);
+
+  const link = document.createElement('a');
+  link.download = filename + '.png';
+  link.href = tempCanvas.toDataURL('image/png');
+  link.click();
+}
+
+function downloadCard(cardId, filename) {
+  const card = document.getElementById(cardId);
+  html2canvas(card, {
+    backgroundColor: '#0d1117',
+    scale: 2,
+    logging: false,
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = filename + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+</script>
+</body>
+</html>

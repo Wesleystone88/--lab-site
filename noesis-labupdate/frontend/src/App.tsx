@@ -8,6 +8,7 @@ import Architecture from './pages/Architecture'
 import Agent from './pages/Agent'
 import Environment from './pages/Environment'
 import About from './pages/About'
+import Demo from './pages/Demo'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/architecture" element={<Architecture />} />
             <Route path="/agent" element={<Agent />} />
             <Route path="/environment" element={<Environment />} />
+            <Route path="/demo" element={<Demo />} />
             <Route path="/about" element={<About />} />
           </Routes>
         </main>

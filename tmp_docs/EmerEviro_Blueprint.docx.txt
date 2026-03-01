@@ -1,0 +1,1230 @@
+EMERVIRO
+
+System Blueprint
+
+Complete Architecture · All Interfaces · All Hooks · Build Guide for New Session
+
+Layer
+
+Component
+
+Role
+
+Environment Layer
+
+IQPatternEnv + EnvironmentBase
+
+Problem generation, surface rotation, structural feature extraction
+
+Feature Extraction
+
+_extract_structural_features()
+
+Raw problem → stable context dict. Class, trend, op_hint, constraints
+
+Cognitive Router
+
+router.py → CognitiveRouter
+
+Feature dict → substrate dispatch. Five states. Full routing log
+
+Substrates (×4+1)
+
+compute/solver/decomposer/memory_probe/bandit
+
+Purpose-built solvers. Identical interface: run(features,problem,choices)→(answer,expl)
+
+SextBioRAG Agent
+
+6-pillar hybrid (CME+TFE+BioRAG+PEE+PFC+Bandit)
+
+Bandit fallback. Biological memory dynamics. Continuous update
+
+Persistence Layer
+
+PersistentMemory + GlyphRegistry
+
+Glyphs (invariants) + Cards (episodes) + agent_state.pkl across sessions
+
+NN Engine (Future)
+
+nn_engine/ — NOT YET BUILT
+
+Continual-learning specialist. Replaces Beta distributions. Hooks defined here
+
+
+
+⬡ = Future NN hook point — interface defined, not yet built
+
+Everything colored orange is a defined extension point. Build the NN engine to match these hooks exactly.
+
+
+
+
+Layer 1 — Environment
+
+
+
+The environment generates problems, rotates surfaces, and extracts structural features. It is the input boundary of the system. Nothing downstream sees raw problem text — only the structured feature dict.
+
+IQPatternEnv
+
+File: environments/iq_patterns.py  (739 lines)
+
+Signature
+
+Purpose / Returns
+
+reset(episode_id:int)->dict
+
+Generate new problem. Returns obs dict with task.context (structural features)
+
+step(action:Action)->tuple
+
+Submit answer. Returns (obs, reward, done, info). info has success, class, surface, correct_answer
+
+_extract_structural_features(p)->dict
+
+KEY METHOD. Converts raw problem dict to stable feature dict. This is what the router reads.
+
+get_snapshots()->list
+
+Return collected episode snapshots for artifact generation
+
+
+
+_extract_structural_features() — output schema
+
+This is the most important method in the environment. The router reads nothing else.
+
+Signature
+
+Purpose / Returns
+
+class: str
+
+cross_sequence | constraint_satisfaction | rule_inversion | structural_analogy | code_pattern_hybrid
+
+surface: str
+
+numeric | symbolic | code — surface presentation (NOT the rule)
+
+c_trend: str
+
+[cross_seq] up | down | flat — direction of C series
+
+a_vs_b: str
+
+[cross_seq] a_bigger | b_bigger | equal
+
+op_hint: str
+
+[cross_seq] add | sub | mul — first-order operation hint
+
+relationship: str
+
+[cross_seq] between_series — always set for cross_seq
+
+constraint_count: str
+
+[constraint] 3 — number of constraints
+
+all_must_hold: str
+
+[constraint] true — flag for solver
+
+has_divisibility: str
+
+[constraint] true|false
+
+has_parity: str
+
+[constraint] true|false
+
+pre_trend: str
+
+[rule_inv] up | down — trend before inversion
+
+inversion_detected: str
+
+[rule_inv] true|false
+
+inversion_point: str
+
+[rule_inv] early | late | none
+
+transform_direction: str
+
+[analogy] up | down
+
+transform_magnitude: str
+
+[analogy] small | medium | large
+
+c_relative: str
+
+[analogy] small | large
+
+structural_type: str
+
+[code] dependency | guard
+
+inv_name: str
+
+[code] dependency_order | guard_before_use
+
+
+
+Five Pattern Classes
+
+Signature
+
+Purpose / Returns
+
+cross_sequence
+
+C[n]=A[n] OP B[n]. OP is hidden. Surface: numeric/symbolic/code. Requires arithmetic.
+
+constraint_satisfaction
+
+N satisfies ALL constraints simultaneously. Requires global constraint search.
+
+rule_inversion
+
+Sequence follows R then inverts to ~R. Requires temporal trace + inversion detection.
+
+structural_analogy
+
+T(A)=B compound transform. Apply T to C. Requires algebraic decomposition.
+
+code_pattern_hybrid
+
+Structural programming invariants across surfaces. Learnable via experience alone.
+
+⬡ HOOK: PatternClass protocol: add new classes by subclassing InvariantClass and registering in INVARIANT_CLASSES dict. Router and substrates pick up automatically if SUBSTRATE_MAP updated.
+
+⬡ HOOK: Surface protocol: add new surfaces (visual, audio, etc.) by extending generate() in each InvariantClass. Feature extraction must remain surface-invariant.
+
+
+
+
+Layer 2 — Cognitive Router
+
+
+
+File: router.py  (143 lines)
+
+The router is the dispatch layer. It reads structural features, selects the substrate, calls it, logs everything. It does not make decisions itself — it routes them. Every decision is in the log.
+
+CognitiveRouter Interface
+
+Signature
+
+Purpose / Returns
+
+route(features,problem,choices,episode)->tuple[answer,substrate,explanation]
+
+Main entry. Returns (answer|None, substrate_used, explanation_str). None means fallback to Bandit.
+
+record_outcome(substrate:str, correct:bool)
+
+Called after every episode. Feeds substrate_accuracy dict. This is what the threshold reads.
+
+substrate_report()->dict
+
+Returns {name:{attempts:int, accuracy:float}} for all substrates called this session.
+
+last_routing()->dict
+
+Returns most recent routing_log entry. For inspection and debugging.
+
+
+
+SUBSTRATE_MAP — current dispatch table
+
+Signature
+
+Purpose / Returns
+
+cross_sequence -> compute
+
+Arithmetic substrate. Tries all ops, finds one consistent with known C values.
+
+constraint_satisfaction -> solver
+
+Constraint solver. Parses rules, evaluates choices globally.
+
+structural_analogy -> decomposer
+
+Transform algebra. Known compound transforms + brute force linear.
+
+rule_inversion -> memory_probe
+
+Temporal trace reader. Detects delta sign change = inversion point.
+
+code_pattern_hybrid -> bandit
+
+Passthrough. Bandit handles this class from experience alone.
+
+
+
+Routing States
+
+Signature
+
+Purpose / Returns
+
+ROUTES_TO substrate
+
+Substrate called, returned confident answer, used directly
+
+bandit_fallback
+
+Substrate returned None — Bandit takes over
+
+(future) DEFER
+
+Router has no prior for this context — substrate decides
+
+(future) CONFIRM
+
+Memory agrees with substrate answer — high confidence
+
+(future) CONFLICT
+
+Memory disagrees — surface conflict, default to substrate, log salience
+
+(future) OVERRIDE
+
+Memory earned override authority (>threshold accuracy in conflicts)
+
+(future) RETRACT
+
+Override was wrong — prior erodes back toward CONFLICT
+
+
+
+Routing Log Entry Schema
+
+Every routing decision appended to router.routing_log. Persisted across sessions in future persistent routing log.
+
+Signature
+
+Purpose / Returns
+
+episode: int
+
+Episode number
+
+class: str
+
+Pattern class from features dict
+
+substrate: str
+
+Substrate called (or bandit_fallback)
+
+answer: str|None
+
+What substrate returned
+
+explanation: str
+
+Human-readable reasoning from substrate
+
+choices: list[str]
+
+All available choices for this problem
+
+⬡ HOOK: Persistent routing log: router.routing_log currently resets each session. Hook: serialize to append-only JSONL after every episode. This log is the training data for the NN engine and the calibration data for the memory-compute threshold.
+
+⬡ HOOK: Memory-compute hybrid: insert between substrate.run() and the return. See Section 7 for full spec.
+
+⬡ HOOK: NN router hook: replace SUBSTRATE_MAP lookup with nn_router.predict(features) -> (substrate, confidence). Falls back to static map if confidence below threshold.
+
+
+
+
+Layer 3 — Substrates
+
+
+
+Files: substrates/compute.py, solver.py, decomposer.py, memory_probe.py  (~85 lines each)
+
+Every substrate exposes exactly one function. The interface is identical across all four. Adding a new substrate means creating a file with this function and adding one line to SUBSTRATE_MAP.
+
+Universal Substrate Interface
+
+Signature
+
+Purpose / Returns
+
+run(features:dict, problem:dict, choices:list) -> tuple[answer, explanation]
+
+Returns (answer_string|None, explanation_string). None = substrate cannot solve this problem. Router falls back to Bandit.
+
+
+
+compute.py — Arithmetic
+
+Signature
+
+Purpose / Returns
+
+solve_cross_sequence(features,problem,choices)
+
+Tries add/subtract/multiply/parity against known A,B,C values. Finds consistent operation. Applies to A[-1],B[-1]. Returns closest choice.
+
+OPERATIONS dict
+
+{add:a+b, subtract:a-b, multiply:a*b, parity:(a+b)%2} — the four candidate operations
+
+
+
+Failure mode: no operation is consistent with given C values. Returns fallback using op_hint from features.
+
+solver.py — Constraint Satisfaction
+
+Signature
+
+Purpose / Returns
+
+parse_constraints(constraints:list[str])->list[callable]
+
+Converts ["divisible by 3","digit sum = 5","even"] to list of lambda functions
+
+solve_constraint_satisfaction(features,problem,choices)
+
+Evaluates each choice against all constraint fns. Returns choice with highest satisfaction count.
+
+
+
+Handles: "divisible by N", "digit sum = N", "even/odd", "in range N to M". Extensible by adding to parse_constraints().
+
+decomposer.py — Transform Algebra
+
+Signature
+
+Purpose / Returns
+
+KNOWN_TRANSFORMS list
+
+double_plus(×2+3), triple_minus(×3-2), negate_shift(-x+10), square_minus(x²-1), plus variants
+
+find_best_transform(a,b)->list
+
+Returns all transforms where T(a)=b. Prioritizes non-trivial multipliers.
+
+solve_structural_analogy(features,problem,choices)
+
+Finds T: T(a)=b. Applies to c. Matches against choices. Falls back to brute-force linear.
+
+
+
+Adding new compound transforms: append to KNOWN_TRANSFORMS. No other changes needed.
+
+memory_probe.py — Temporal Trace
+
+Signature
+
+Purpose / Returns
+
+detect_inversion(sequence:list)->tuple[int,int,str]
+
+Returns (inversion_index, post_delta, direction). Finds where delta sign changes.
+
+solve_rule_inversion(features,problem,choices)
+
+Reads given sequence, calls detect_inversion, extrapolates: last_value + post_delta.
+
+⬡ HOOK: New substrate: create substrates/name.py with run(features,problem,choices)->tuple. Add one entry to SUBSTRATE_MAP in router.py. Done.
+
+⬡ HOOK: NN substrate hook: substrates/nn_substrate.py — run() calls nn_engine.infer(features,problem) instead of deterministic logic. Same interface, learned weights inside.
+
+⬡ HOOK: Substrate confidence: add confidence:float to return tuple -> (answer, explanation, confidence). Router uses confidence to decide CONFIRM/CONFLICT/OVERRIDE states.
+
+
+
+
+Layer 4 — SextBioRAG Agent (6-Pillar Hybrid)
+
+
+
+Files: sext_biorag.py (416), quint_biorag.py (1361), quint_hybrid.py (532), plus 5 engine files
+
+The agent is the Bandit fallback and the biological memory layer. When the router cannot dispatch to a substrate (class=code_pattern, or substrate returns None), the agent handles the decision through six coordinated pillars.
+
+Public Interface
+
+Signature
+
+Purpose / Returns
+
+choose_action(condition:Dict[str,str], actions:List[str]) -> Tuple[str,str]
+
+Returns (action, source). source indicates which pillar drove: explore|exploit|CME|PFC|etc
+
+update(condition, action, success:bool, step:int)
+
+Update all pillars from outcome. Bandit posteriors, hippocampal encoding, PEE surprise, CME memory.
+
+save_state(filepath:str)
+
+Full serialization: bandit posteriors, BioRAG hippocampal traces + Hopfield matrices, PEE calibration, signal bus state.
+
+load_state(filepath:str)
+
+Full restoration from saved state. Agent picks up exactly where it left off.
+
+get_stats()->Dict[str,Any]
+
+Returns pillar-level statistics for monitoring and debugging.
+
+
+
+The Six Pillars — Decision Flow
+
+Every call to choose_action passes through all six pillars in sequence. Each contributes weights to the final decision.
+
+Signature
+
+Purpose / Returns
+
+1. CME (Cognitive Metabolic Residue)
+
+emit_bias(condition,actions)->BiasSurface. Hard blocks recently-used actions. Soft-reduces actions with negative history. Prevents perseveration.
+
+2. TFE (Time Field Engine)
+
+open_key(), update()->TFEObservables. Temporal decay — orphaned actions (used and failed) get weight 0.1, abandoned get 0.5. Time is a signal.
+
+3. BioRAG (Hippocampal + Hopfield)
+
+retrieve(condition,actions)->PillarSignal. Hopfield attractor convergence over stored patterns. Hippocampal index for episodic memory. Returns weighted signal.
+
+4. PEE (Prediction Error Engine)
+
+predict_from_beta(alpha,beta)->prob,conf. Locks prediction BEFORE action. Computes surprise = |predicted-actual| after. High surprise = deeper encoding.
+
+5. PFC (Prefrontal Cortex)
+
+evaluate(context,actions,fused_weights,...)->PFCSignal. Impulse control gate. Adjusts final weights based on novelty, uncertainty, consequence risk.
+
+6. Bandit (Thompson Sampling)
+
+get_action(ctx_key,actions,...)->action,source,weights. Samples from Beta(alpha,beta) posteriors. Balances explore/exploit by posterior uncertainty.
+
+
+
+Signal Bus — Pillar Fusion
+
+Signature
+
+Purpose / Returns
+
+bus.fuse([tfe_signal,cme_signal,rag_signal],actions)->Dict[str,float]
+
+Combines pillar weights using metacog trust multipliers. Output goes to PFC evaluation.
+
+bus.publish_pee(signal)
+
+PEE broadcasts surprise signal. Encoding salience set from this. High surprise = stronger hippocampal encoding.
+
+
+
+BioRAG — Biological Memory Detail
+
+Signature
+
+Purpose / Returns
+
+agent.rag.hippocampus.encode(context,action,success,salience)
+
+Stores episode in hippocampal index. Salience set by PEE surprise weight.
+
+agent.rag.hippocampus.retrieve(context,actions,top_k,n_cycles)->List[Tuple[MemoryTrace,float]]
+
+Hopfield attractor convergence over stored traces. Returns top_k most similar with confidence scores.
+
+agent.rag.hippocampus.consolidate(n_replays,max_capacity)
+
+Sleep consolidation. Replays high-salience traces into Hopfield weights. Call between sessions.
+
+agent.rag.hippocampus.pin(trace_id)->bool
+
+Pin a trace. Pinned traces never decay. Use for critical memories.
+
+agent.rag.working_memory.add(action,success,salience)
+
+Working memory buffer (CAPACITY=7). Decays each tick. Short-term action context.
+
+⬡ HOOK: NN memory hook: agent.rag.hippocampus can be replaced with nn_hippocampus — same encode/retrieve interface, weights inside instead of Hopfield matrices. The rest of the system is unchanged.
+
+⬡ HOOK: Bandit replacement hook: agent.bandit.get_action() is the single call site. Replace BanditEngine with nn_bandit that uses a small continual-learning network. Same interface: get_action(ctx_key,actions,...)->action,source,weights.
+
+⬡ HOOK: Metacognitive hook: agent.metacog.get_all_trust() returns pillar trust weights. NN could learn these weights dynamically instead of rule-based updates. Interface: log_decision(record)->Optional[adjustment].
+
+
+
+
+Layer 5 — Persistence Layer
+
+
+
+Files: persistent_memory.py (123), glyph_registry.py (882)
+
+The persistence layer is what separates this from an LLM. State accumulates across sessions. The agent that starts run 2 is not the same as the agent that started run 1.
+
+PersistentMemory Interface
+
+Signature
+
+Purpose / Returns
+
+save(agent,by_class,snapshots,run_number)
+
+Calls agent.save_state(pkl_path) for full state. Writes agent_glyphs.json (human-readable). Called at session end.
+
+load_into(agent)->dict
+
+Calls agent.load_state(pkl_path). Returns glyph metadata dict. Called at session start.
+
+exists()->bool
+
+True if memory/agent_state.pkl exists. Used to decide cold vs warm start.
+
+
+
+Memory Files
+
+Signature
+
+Purpose / Returns
+
+memory/agent_state.pkl (208KB)
+
+Full agent state: bandit posteriors (Beta distributions), BioRAG hippocampal traces + Hopfield matrices, PEE calibration, TFE snapshot, signal bus state. Native agent format.
+
+memory/agent_glyphs.json (4.6KB)
+
+Human-readable. run_number, class_stats (accuracy per class), 5 glyphs, N cards. Editable. Agent reads it back next session.
+
+memory/agent_memory.json (34KB)
+
+Full posteriors dict, pinned traces, glyphs, cards. For inspection and debugging.
+
+
+
+Glyph Schema
+
+Glyphs are structural invariants discovered through experience. One per pattern class.
+
+Signature
+
+Purpose / Returns
+
+id: str
+
+Format: g-{name}@{major}.{minor}.{patch}. Immutable.
+
+title: str
+
+Human-readable name. "Cross Sequence Rule"
+
+md: str
+
+Markdown description of the invariant + learned accuracy. Editable.
+
+json: GlyphJson
+
+type (GlyphType), authority (GlyphAuthority), domain, pfc_overrides, confidence_floor
+
+tags: List[str]
+
+Class name, substrate name, accuracy bucket (acc_100pct). Used for routing.
+
+
+
+Card Schema
+
+Cards are high-salience episodic memories. Pinned correct episodes from each substrate.
+
+Signature
+
+Purpose / Returns
+
+id: str
+
+Format: card-ep{N}-{class[:8]}
+
+title: str
+
+Episode N: {class} via {substrate}
+
+glyph_ids: List[str]
+
+Which glyphs this card activates
+
+inputs: List[str]
+
+Structural context items (from features dict)
+
+outputs: List[str]
+
+chosen, correct, right, substrate
+
+metadata: dict
+
+episode, class, substrate, correct, explanation, salience, pinned
+
+What Persists vs What Resets
+
+Signature
+
+Purpose / Returns
+
+Persists across sessions
+
+Bandit Beta posteriors — accumulated action preferences per structural context
+
+Persists across sessions
+
+BioRAG hippocampal traces (pinned) — high-salience episodic memories
+
+Persists across sessions
+
+Hopfield attractor matrices — pattern energy landscape
+
+Persists across sessions
+
+Glyph accuracy weights — what the system knows about each class
+
+Persists across sessions
+
+Cards — episodic evidence for each substrate
+
+Resets each session
+
+Router routing_log (in memory only — hook below)
+
+Resets each session
+
+TFE temporal keys (fresh decay for each session)
+
+Resets each session
+
+Working memory buffer (short-term, intentional)
+
+⬡ HOOK: Persistent routing log: router.routing_log is in-memory only. Add JSONL append writer after router.route() call. File: memory/routing_log.jsonl. This becomes the NN engine training corpus.
+
+⬡ HOOK: Incremental glyph update: glyphs currently written at session end. Add glyph_registry.update_accuracy(cls, correct) called after every episode. Glyphs become running beliefs, not snapshots.
+
+⬡ HOOK: Crash-safe Bandit: write agent.bandit.state posteriors to memory/bandit_checkpoint.json every 10 episodes. If process dies, reload from checkpoint not full session start.
+
+⬡ HOOK: GlyphRegistry.bootstrap_from_directory(path): load glyphs from JSON files at startup. Hook for external glyph injection — another system can write glyphs that this system loads.
+
+
+
+
+Layer 6 — Memory-Compute Hybrid (To Build)
+
+
+
+Status: Architecture defined. Not yet implemented. This section is the complete spec.
+
+The insight: compute cannot use memory, but memory can remember what compute did. The router wraps every substrate call with a memory layer that tracks outcomes per structural context and earns authority to influence routing over time.
+
+Five States
+
+Signature
+
+Purpose / Returns
+
+DEFER
+
+Memory has no prior for this structural context. Substrate decides unconditionally.
+
+CONFIRM
+
+Memory agrees with substrate answer. Both aligned. Return with high confidence flag.
+
+CONFLICT
+
+Memory disagrees. Surface conflict explicitly in trace. Default to substrate. Log with salience weight. This conflict is data.
+
+OVERRIDE
+
+Memory has earned authority: >threshold accuracy in conflicts for this context. Memory leads. Substrate answer is secondary.
+
+RETRACT
+
+Override fired but was wrong. Prior erodes by decay_factor. Falls back toward CONFLICT. Self-correcting.
+
+
+
+Threshold Mechanics
+
+The override threshold is the one deliberately-set parameter. Everything else is derived from conflict history.
+
+Signature
+
+Purpose / Returns
+
+threshold: float = 0.70
+
+Memory needs >70% accuracy in conflicts to earn OVERRIDE state. Set deliberately.
+
+min_conflicts: int = 10
+
+Minimum conflicts before override authority can be earned. Prevents premature override.
+
+decay_factor: float = 0.85
+
+On RETRACT: prior_strength *= decay_factor. Erodes toward CONFLICT after wrong override.
+
+recovery_rate: float = 0.05
+
+On correct OVERRIDE: prior_strength += recovery_rate. Slow recovery after retraction.
+
+ctx_key: str
+
+Structural context signature. Threshold is per context, not global.
+
+
+
+Memory-Compute Call Site
+
+Insert in router.py between substrate.run() and the return statement:
+
+Signature
+
+Purpose / Returns
+
+substrate_answer, expl = substrate.run(features,problem,choices)
+
+Substrate computes answer as normal
+
+state, final_answer, confidence = memory_compute_hybrid.evaluate(features, substrate_answer, choices)
+
+Hybrid checks memory prior, determines state, returns final answer
+
+router.routing_log[-1][hybrid_state] = state
+
+State recorded in routing log for full traceability
+
+return final_answer, substrate_name, expl + f" [{state}]"
+
+Answer returned with state appended to explanation
+
+
+
+Memory Prior Data Structure
+
+Signature
+
+Purpose / Returns
+
+key: tuple(class, op_hint, c_trend, ...)
+
+Structural context signature. Same features as router uses.
+
+substrate_answers: List[str]
+
+What the substrate returned for this context historically
+
+memory_answers: List[str]
+
+What memory predicted for this context historically
+
+conflicts: List[bool]
+
+True where substrate != memory
+
+conflict_outcomes: List[bool]
+
+True where memory was right in a conflict
+
+prior_strength: float
+
+Current authority weight 0.0-1.0. Earned and retracted by evidence.
+
+state: Literal[DEFER,CONFIRM,CONFLICT,OVERRIDE,RETRACT]
+
+Current state for this context
+
+⬡ HOOK: NN memory prior hook: replace the prior data structure with nn_prior.predict(features)->prior_strength,state. The NN learns which contexts memory should override instead of counting manually.
+
+⬡ HOOK: Cross-substrate memory: memory prior currently tracks per-substrate. Future: global memory that can observe all substrate outcomes and learn cross-substrate patterns.
+
+
+
+
+Layer 7 — NN Engine Hooks (Future)
+
+
+
+These hooks are defined now so the NN engine can be built to match exactly. Nothing here is built yet. The interfaces below are contracts.
+
+The NN engine is a separate package: nn_engine/. It connects to EmerEviro through these hook points only. It can be developed, tested, and versioned independently. Slot it in when ready.
+
+Hook 1 — NN Router (replaces static SUBSTRATE_MAP)
+
+File: nn_engine/nn_router.py
+
+Signature
+
+Purpose / Returns
+
+predict(features:dict) -> tuple[substrate_name:str, confidence:float]
+
+Returns substrate prediction + confidence. Router uses if confidence > router_nn_threshold (default 0.8). Falls back to static SUBSTRATE_MAP if below.
+
+train(features:dict, substrate:str, correct:bool)
+
+Online update from routing log entry. Called after every episode.
+
+save(path:str) / load(path:str)
+
+Serialize/restore NN weights. Plugs into PersistentMemory save/load cycle.
+
+
+
+Input: features dict (all keys from _extract_structural_features). Output: one of {compute,solver,decomposer,memory_probe,bandit}. Training signal: routing outcome (correct/wrong).
+
+Hook 2 — NN Hippocampus (replaces Hopfield attractor)
+
+File: nn_engine/nn_hippocampus.py
+
+Signature
+
+Purpose / Returns
+
+encode(context:dict, action:str, success:bool, salience:float)
+
+Store episode. Same signature as HippocampalIndex.encode(). Drop-in replacement.
+
+retrieve(context:dict, actions:list, top_k:int, n_cycles:int) -> List[Tuple[MemoryTrace,float]]
+
+Same return type as HippocampalIndex.retrieve(). Weights inside instead of Hopfield matrices.
+
+consolidate(n_replays:int, max_capacity:int)
+
+Same signature. Called between sessions. NN equivalent of sleep consolidation.
+
+pin(trace_id:str) -> bool
+
+Same signature. Pinned traces get higher retrieval weight permanently.
+
+
+
+The BioRAG layer calls agent.rag.hippocampus.encode/retrieve. Swap the HippocampalIndex object for nn_hippocampus and nothing else changes.
+
+Hook 3 — NN Bandit (replaces Thompson Sampling)
+
+File: nn_engine/nn_bandit.py
+
+Signature
+
+Purpose / Returns
+
+get_action(context_key:str, actions:list, cme_blocks:dict, cme_weights:dict, tfe_decays:dict) -> Tuple[str,str,Dict[str,float]]
+
+Exact signature as BanditEngine.get_action(). Returns (action, source, weights). Drop-in replacement.
+
+update(context_key:str, action:str, success:bool)
+
+Online weight update. Continual learning — no catastrophic forgetting mechanism required here.
+
+state.posteriors: dict
+
+Must expose posteriors dict with same structure as BanditState.posteriors for PEE compatibility.
+
+
+
+The Bandit is the most natural first NN target — small input space (context_key features), small output space (action probabilities), clear training signal (success/fail).
+
+Hook 4 — NN Memory Prior (for memory-compute hybrid)
+
+File: nn_engine/nn_prior.py
+
+Signature
+
+Purpose / Returns
+
+predict(features:dict, substrate_answer:str, choices:list) -> tuple[state:str, confidence:float]
+
+Returns (DEFER|CONFIRM|CONFLICT|OVERRIDE|RETRACT, confidence). NN replaces manual conflict counting.
+
+update(features:dict, substrate_answer:str, memory_answer:str, memory_was_right:bool)
+
+Online update from conflict outcome. Learns which contexts memory should trust.
+
+
+
+Hook 5 — NN Metacognitive Trust (replaces rule-based trust)
+
+File: nn_engine/nn_metacog.py
+
+Signature
+
+Purpose / Returns
+
+predict_trust(pillar_name:str, recent_decisions:list) -> float
+
+Returns trust weight 0.0-1.0 for a pillar. NN learns which pillars to trust in which contexts.
+
+update(pillar_name:str, was_correct:bool)
+
+Online update. Pillar trust drifts based on accuracy history.
+
+
+
+All five NN hooks share the same integration pattern:
+
+1
+
+1. Build nn_engine/nn_X.py implementing the exact interface above
+
+2
+
+2. Test nn_X in isolation against the existing deterministic baseline
+
+3
+
+3. Slot into EmerEviro by replacing the one object instantiation site
+
+4
+
+4. Add nn_X.save()/load() to PersistentMemory.save()/load_into()
+
+5
+
+5. Verify routing log and trace output is unchanged in format
+
+
+
+
+What Was Proven — Test Results
+
+
+
+Routed IQ Test — 500 Episodes
+
+Signature
+
+Purpose / Returns
+
+constraint_satisfaction: 100%
+
+solver — evaluates choices against all constraints simultaneously
+
+rule_inversion: 100%
+
+memory_probe — detects delta sign change, extrapolates correctly
+
+structural_analogy: 100%
+
+decomposer — known transforms + brute force linear, 100% on 50-problem bench
+
+cross_sequence: 98%
+
+compute — finds hidden operation from known A,B,C values
+
+code_pattern_hybrid: 96%
+
+bandit — Thompson Sampling from experience alone
+
+
+
+Substrate Accuracy
+
+Signature
+
+Purpose / Returns
+
+compute:      99% (100 attempts)
+
+Missed 1: parity operation not found from given data
+
+solver:      100% (100 attempts)
+
+Perfect. Constraint parsing and global evaluation correct.
+
+decomposer:   99% (100 attempts)
+
+One edge case where multiple transforms fit A→B equally
+
+memory_probe:100% (100 attempts)
+
+Perfect. Delta sign change detection robust.
+
+bandit:       84% (100 attempts)
+
+Learned from experience. Starts ~50%, ends ~96% with warm start.
+
+
+
+Cold vs Warm Start — 200 Episodes Each
+
+Signature
+
+Purpose / Returns
+
+code_pattern_hybrid
+
+65% cold → 92% warm (+28%)
+
+all other classes
+
+identical cold and warm
+
+
+
+The +28% result is the proof that persistence works. The only class that benefits is the only class that genuinely learns. Compute substrates are correct from episode 1 regardless of prior runs.
+
+
+
+
+Build Guide — New Session
+
+
+
+Everything needed to continue building in a fresh context. The codebase is complete. The NN engine is the next phase.
+
+Repository Structure
+
+Path
+
+Contents
+
+environments/iq_patterns.py
+
+Five pattern classes, surface rotation, structural feature extraction
+
+environments/__init__.py
+
+Class registry — add new environments here
+
+router.py
+
+CognitiveRouter — dispatch table, routing log, substrate accuracy
+
+substrates/compute.py
+
+Arithmetic — cross_sequence
+
+substrates/solver.py
+
+Constraint satisfaction
+
+substrates/decomposer.py
+
+Transform algebra — structural_analogy
+
+substrates/memory_probe.py
+
+Temporal trace reader — rule_inversion
+
+substrates/__init__.py
+
+Package init
+
+persistent_memory.py
+
+PersistentMemory — save/load via agent.save_state/load_state
+
+memory/agent_state.pkl
+
+Full agent state (208KB). Auto-created on first run.
+
+memory/agent_glyphs.json
+
+Human-readable learned state. Editable.
+
+run_comparison.py
+
+Cold vs warm comparison runner
+
+run_routed_iq.py
+
+Full 500-episode routed test
+
+agents/deployable_biorag_hybrids/sext_biorag.py
+
+SextBioRAGAgent — 6-pillar hybrid
+
+agents/deployable_biorag_hybrids/quint_biorag.py
+
+Core 5-pillar implementation (1361 lines)
+
+agents/deployable_biorag_hybrids/glyph_registry.py
+
+Glyph+Card registry (882 lines)
+
+agents/deployable_biorag_hybrids/Bandit_engine/
+
+Thompson Sampling implementation
+
+agents/deployable_biorag_hybrids/Time_engine/
+
+TFE temporal decay implementation
+
+nn_engine/ (TO CREATE)
+
+NN hook implementations. Separate package.
+
+
+
+Priority Build Order for New Session
+
+#
+
+Build
+
+Why first
+
+1
+
+Persistent routing log
+
+Append routing_log to JSONL after every episode. Foundation everything else reads from. Without it, the NN has no training data.
+
+2
+
+Memory-compute hybrid
+
+Five states (DEFER/CONFIRM/CONFLICT/OVERRIDE/RETRACT) with threshold=0.70. Insert in router between substrate.run() and return. This is the architectural completion.
+
+3
+
+Incremental glyph update
+
+Glyphs update after every episode not just session end. Turns snapshots into living beliefs.
+
+4
+
+nn_engine/nn_bandit.py
+
+First NN. Small. Clear interface. Clear training signal. Replaces Beta distributions with learned weights. Proof of concept for the NN engine pattern.
+
+5
+
+nn_engine/nn_router.py
+
+Second NN. Learns substrate dispatch from routing log. Replaces static SUBSTRATE_MAP for novel problem classes.
+
+6
+
+nn_engine/nn_hippocampus.py
+
+Third NN. Replaces Hopfield attractor with learned memory network. Most complex — save for last.
+
+
+
+The Single Design Principle
+
+An LLM weights are frozen. This system state is always accreting. The routing log grows. The glyph confidences shift. The Bandit posteriors drift toward better calibration. The memory-compute threshold adjusts from conflict outcomes. Nothing resets unless you explicitly tell it to. That is the line.
+
+"Compute when compute is required. Memory when memory is required. The rest stays lean and honest."
+
+EmerEviro  ·  System Blueprint  ·  Complete Architecture

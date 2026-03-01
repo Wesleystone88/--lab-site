@@ -1,0 +1,76 @@
+{
+  "timestamp": "2026-02-25T12:17:44",
+  "passed": 6,
+  "total": 6,
+  "baselines": {},
+  "results": [
+    {
+      "name": "CME learns constraint (avoid A under X)",
+      "suite": "behavioral",
+      "passed": true,
+      "duration_ms": 173.7,
+      "metrics": {
+        "A_chosen_in_50": 0
+      },
+      "notes": "",
+      "error": ""
+    },
+    {
+      "name": "PEE surprise amplifies on unexpected failure",
+      "suite": "behavioral",
+      "passed": true,
+      "duration_ms": 12.7,
+      "metrics": {
+        "error_magnitude": 0.15
+      },
+      "notes": "",
+      "error": ""
+    },
+    {
+      "name": "BioRAG hippocampus accumulates traces",
+      "suite": "behavioral",
+      "passed": true,
+      "duration_ms": 115.5,
+      "metrics": {
+        "trace_count": 51
+      },
+      "notes": "",
+      "error": ""
+    },
+    {
+      "name": "Working memory boosts recent successful action",
+      "suite": "behavioral",
+      "passed": true,
+      "duration_ms": 120.6,
+      "metrics": {
+        "D_in_50": 50
+      },
+      "notes": "",
+      "error": ""
+    },
+    {
+      "name": "Recovery after environment flip",
+      "suite": "behavioral",
+      "passed": true,
+      "duration_ms": 1264.4,
+      "metrics": {
+        "early_fail_rate": 0.069,
+        "late_fail_rate": 0.0
+      },
+      "notes": "",
+      "error": ""
+    },
+    {
+      "name": "InternalSignalBus wired to BioRAG",
+      "suite": "behavioral",
+      "passed": true,
+      "duration_ms": 6.2,
+      "metrics": {
+        "has_bus": true,
+        "rag_wired": true
+      },
+      "notes": "",
+      "error": ""
+    }
+  ]
+}

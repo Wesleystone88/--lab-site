@@ -1,0 +1,1207 @@
+HIGH-IQ PATTERN
+
+EMERGENCE TEST
+
+
+
+What the agent was given. What it built. What it couldn't.
+
+
+
+Constraint Satisfaction
+
+Rule Inversion
+
+Structural Analogy
+
+Code Structure
+
+Cross-Sequence
+
+25%
+
+15%
+
+20%
+
+100%
+
+25%
+
+Hard
+
+Hard
+
+Hard
+
+Medium
+
+Hardest
+
+
+
+SextBioRAG · 6-Pillar Biological Architecture · 500 Episodes · No Prompting
+
+
+
+Five pattern classes designed to break surface-level systems.
+
+One class mastered. Four showing genuine difficulty. All honest.
+
+
+
+
+What This Test Is
+
+
+
+These are not standard IQ questions. They are specifically chosen to fail pattern-matching systems — LLMs, standard RL agents, lookup tables. The hidden rule in each class cannot be found by looking at the surface. It requires holding multiple sequences in memory simultaneously, detecting structure across representations, or satisfying constraints globally.
+
+The five classes:
+
+Constraint Satisfaction (Hard): Multiple rules must ALL hold simultaneously. Finding the single answer that satisfies every constraint requires global reasoning — not local optimization.
+
+Rule Inversion (Hard): The pattern holds, then inverts. Any system that extrapolates the first pattern gets the wrong answer every time after the inversion point.
+
+Structural Analogy (Hard): A→B as C→? where the transformation is compound. Simple ratio or difference approaches fail. Requires decomposing and reapplying the full transformation.
+
+Code Structure (Medium): Structural programming invariants expressed across surfaces. Dependency order and guard-before-use patterns. These transfer across numeric and code representations.
+
+Cross-Sequence (Hardest): The rule lives BETWEEN series. No amount of looking at C alone yields the answer. Requires holding A, B, and C in working memory simultaneously and finding the hidden operation.
+
+
+
+The agent never sees the rule. It sees structural features — class type, trend direction, operation hint, constraint flags — and learns action preferences from binary feedback alone: correct or wrong. The numbers change every episode. The structure stays the same.
+
+
+
+
+Learning Curves by Class
+
+
+
+Constraint Satisfaction  [Hard]
+
+Final accuracy: 25%  ← Genuinely difficult
+
+Multiple rules must ALL hold simultaneously. Finding the single answer that satisfies every constraint requires global reasoning — not local optimization.
+
+Episodes
+
+Progress
+
+Acc
+
+1–21
+
+███░░░░░░░░░░░
+
+20%
+
+26–46
+
+███░░░░░░░░░░░
+
+20%
+
+51–71
+
+███░░░░░░░░░░░
+
+20%
+
+76–96
+
+███░░░░░░░░░░░
+
+20%
+
+101–121
+
+███░░░░░░░░░░░
+
+20%
+
+126–146
+
+██████░░░░░░░░
+
+40%
+
+151–171
+
+██████░░░░░░░░
+
+40%
+
+176–196
+
+███░░░░░░░░░░░
+
+20%
+
+201–221
+
+██████░░░░░░░░
+
+40%
+
+226–246
+
+██████░░░░░░░░
+
+40%
+
+251–271
+
+███░░░░░░░░░░░
+
+20%
+
+276–296
+
+███████████░░░
+
+80%
+
+301–321
+
+██████░░░░░░░░
+
+40%
+
+326–346
+
+██████░░░░░░░░
+
+40%
+
+351–371
+
+███████████░░░
+
+80%
+
+376–396
+
+░░░░░░░░░░░░░░
+
+0%
+
+401–421
+
+███░░░░░░░░░░░
+
+20%
+
+426–446
+
+███████████░░░
+
+80%
+
+451–471
+
+░░░░░░░░░░░░░░
+
+0%
+
+476–496
+
+░░░░░░░░░░░░░░
+
+0%
+
+
+
+Rule Inversion  [Hard]
+
+Final accuracy: 15%  ← Genuinely difficult
+
+The pattern holds, then inverts. Any system that extrapolates the first pattern gets the wrong answer every time after the inversion point.
+
+Episodes
+
+Progress
+
+Acc
+
+2–22
+
+███░░░░░░░░░░░
+
+20%
+
+27–47
+
+░░░░░░░░░░░░░░
+
+0%
+
+52–72
+
+███░░░░░░░░░░░
+
+20%
+
+77–97
+
+███░░░░░░░░░░░
+
+20%
+
+102–122
+
+███░░░░░░░░░░░
+
+20%
+
+127–147
+
+██████░░░░░░░░
+
+40%
+
+152–172
+
+███░░░░░░░░░░░
+
+20%
+
+177–197
+
+░░░░░░░░░░░░░░
+
+0%
+
+202–222
+
+██████░░░░░░░░
+
+40%
+
+227–247
+
+███░░░░░░░░░░░
+
+20%
+
+252–272
+
+██████░░░░░░░░
+
+40%
+
+277–297
+
+██████░░░░░░░░
+
+40%
+
+302–322
+
+░░░░░░░░░░░░░░
+
+0%
+
+327–347
+
+██████░░░░░░░░
+
+40%
+
+352–372
+
+██████░░░░░░░░
+
+40%
+
+377–397
+
+██████░░░░░░░░
+
+40%
+
+402–422
+
+░░░░░░░░░░░░░░
+
+0%
+
+427–447
+
+███░░░░░░░░░░░
+
+20%
+
+452–472
+
+███░░░░░░░░░░░
+
+20%
+
+477–497
+
+███░░░░░░░░░░░
+
+20%
+
+
+
+Structural Analogy  [Hard]
+
+Final accuracy: 20%  ← Genuinely difficult
+
+A→B as C→? where the transformation is compound. Simple ratio or difference approaches fail. Requires decomposing and reapplying the full transformation.
+
+Episodes
+
+Progress
+
+Acc
+
+3–23
+
+░░░░░░░░░░░░░░
+
+0%
+
+28–48
+
+██████░░░░░░░░
+
+40%
+
+53–73
+
+███░░░░░░░░░░░
+
+20%
+
+78–98
+
+███░░░░░░░░░░░
+
+20%
+
+103–123
+
+██████░░░░░░░░
+
+40%
+
+128–148
+
+██████░░░░░░░░
+
+40%
+
+153–173
+
+████████░░░░░░
+
+60%
+
+178–198
+
+███░░░░░░░░░░░
+
+20%
+
+203–223
+
+██████░░░░░░░░
+
+40%
+
+228–248
+
+██████░░░░░░░░
+
+40%
+
+253–273
+
+████████░░░░░░
+
+60%
+
+278–298
+
+███████████░░░
+
+80%
+
+303–323
+
+████████░░░░░░
+
+60%
+
+328–348
+
+██████░░░░░░░░
+
+40%
+
+353–373
+
+███░░░░░░░░░░░
+
+20%
+
+378–398
+
+░░░░░░░░░░░░░░
+
+0%
+
+403–423
+
+░░░░░░░░░░░░░░
+
+0%
+
+428–448
+
+██████░░░░░░░░
+
+40%
+
+453–473
+
+░░░░░░░░░░░░░░
+
+0%
+
+478–498
+
+██████░░░░░░░░
+
+40%
+
+
+
+Code Structure  [Medium]
+
+Final accuracy: 100%  ← Mastered
+
+Structural programming invariants expressed across surfaces. Dependency order and guard-before-use patterns. These transfer across numeric and code representations.
+
+Episodes
+
+Progress
+
+Acc
+
+4–24
+
+███████████░░░
+
+80%
+
+29–49
+
+██████░░░░░░░░
+
+40%
+
+54–74
+
+███░░░░░░░░░░░
+
+20%
+
+79–99
+
+██████████████
+
+100%
+
+104–124
+
+███████████░░░
+
+80%
+
+129–149
+
+██████████████
+
+100%
+
+154–174
+
+███████████░░░
+
+80%
+
+179–199
+
+██████████████
+
+100%
+
+204–224
+
+██████████████
+
+100%
+
+229–249
+
+███████████░░░
+
+80%
+
+254–274
+
+██████████████
+
+100%
+
+279–299
+
+██████████████
+
+100%
+
+304–324
+
+███████████░░░
+
+80%
+
+329–349
+
+██████████████
+
+100%
+
+354–374
+
+██████████████
+
+100%
+
+379–399
+
+██████████████
+
+100%
+
+404–424
+
+██████████████
+
+100%
+
+429–449
+
+██████████████
+
+100%
+
+454–474
+
+██████████████
+
+100%
+
+479–499
+
+██████████████
+
+100%
+
+
+
+Cross-Sequence  [Hardest]
+
+Final accuracy: 25%  ← Genuinely difficult
+
+The rule lives BETWEEN series. No amount of looking at C alone yields the answer. Requires holding A, B, and C in working memory simultaneously and finding the hidden operation.
+
+Episodes
+
+Progress
+
+Acc
+
+5–25
+
+████████░░░░░░
+
+60%
+
+30–50
+
+░░░░░░░░░░░░░░
+
+0%
+
+55–75
+
+██████░░░░░░░░
+
+40%
+
+80–100
+
+░░░░░░░░░░░░░░
+
+0%
+
+105–125
+
+███░░░░░░░░░░░
+
+20%
+
+130–150
+
+████████░░░░░░
+
+60%
+
+155–175
+
+░░░░░░░░░░░░░░
+
+0%
+
+180–200
+
+███░░░░░░░░░░░
+
+20%
+
+205–225
+
+███░░░░░░░░░░░
+
+20%
+
+230–250
+
+███░░░░░░░░░░░
+
+20%
+
+255–275
+
+░░░░░░░░░░░░░░
+
+0%
+
+280–300
+
+███░░░░░░░░░░░
+
+20%
+
+305–325
+
+████████░░░░░░
+
+60%
+
+330–350
+
+███░░░░░░░░░░░
+
+20%
+
+355–375
+
+██████░░░░░░░░
+
+40%
+
+380–400
+
+░░░░░░░░░░░░░░
+
+0%
+
+405–425
+
+███░░░░░░░░░░░
+
+20%
+
+430–450
+
+████████░░░░░░
+
+60%
+
+455–475
+
+███░░░░░░░░░░░
+
+20%
+
+480–500
+
+░░░░░░░░░░░░░░
+
+0%
+
+
+
+
+
+
+Episode Snapshots
+
+Exactly what the agent saw. Exactly what it chose. Right or wrong — you can see it.
+
+Episode 1
+
+Constraint Satisfaction
+
+Surface: code
+
+✗  WRONG
+
+Structural context (what the agent actually saw):
+
+class
+
+constraint_satisfaction
+
+surface
+
+code
+
+constraint_count
+
+3
+
+all_must_hold
+
+true
+
+has_divisibility
+
+true
+
+has_parity
+
+true
+
+Problem:
+
+Find the value N where your function must:
+
+  • accept N inputs (N divisible by 2)
+
+  • produce output whose digits sum to 5
+
+  • return even count
+
+Choices:
+
+► 60
+
+  50  ← correct
+
+  52
+
+  49
+
+Agent chose: 60  via unbiased    Correct: 50
+
+Episode 5
+
+Cross-Sequence
+
+Surface: code
+
+✗  WRONG
+
+Structural context (what the agent actually saw):
+
+class
+
+cross_sequence
+
+surface
+
+code
+
+c_trend
+
+up
+
+a_vs_b
+
+a_bigger
+
+op_hint
+
+add
+
+relationship
+
+between_series
+
+Problem:
+
+A: [3, 7, 6]
+
+B: [5, 3, 4]
+
+C: [8, 10] + [?]
+
+Choices:
+
+  12
+
+  9
+
+  10  ← correct
+
+► 13
+
+Agent chose: 13  via unbiased    Correct: 10
+
+Episode 20
+
+Cross-Sequence
+
+Surface: numeric
+
+✓  CORRECT
+
+Structural context (what the agent actually saw):
+
+class
+
+cross_sequence
+
+surface
+
+numeric
+
+c_trend
+
+down
+
+a_vs_b
+
+b_bigger
+
+op_hint
+
+sub
+
+relationship
+
+between_series
+
+Problem:
+
+A: [1, 5, 3]
+
+B: [2, 5, 4]
+
+C: [1, 0] + [?]
+
+Choices:
+
+  -2
+
+  3
+
+  4
+
+► 1  ← correct
+
+Agent chose: 1  via unbiased    Correct: 1
+
+Episode 50
+
+Cross-Sequence
+
+Surface: symbolic
+
+✗  WRONG
+
+Structural context (what the agent actually saw):
+
+class
+
+cross_sequence
+
+surface
+
+symbolic
+
+c_trend
+
+down
+
+a_vs_b
+
+b_bigger
+
+op_hint
+
+add
+
+relationship
+
+between_series
+
+Problem:
+
+A: [2, 3, 1]
+
+B: [6, 3, 7]
+
+C: [8, 6] + [?]
+
+Choices:
+
+  4
+
+  10
+
+  8  ← correct
+
+► 3
+
+Agent chose: 3  via unbiased    Correct: 8
+
+Episode 100
+
+Cross-Sequence
+
+Surface: numeric
+
+✗  WRONG
+
+Structural context (what the agent actually saw):
+
+class
+
+cross_sequence
+
+surface
+
+numeric
+
+c_trend
+
+up
+
+a_vs_b
+
+a_bigger
+
+op_hint
+
+mul
+
+relationship
+
+between_series
+
+Problem:
+
+A: [6, 8, 6]
+
+B: [7, 6, 6]
+
+C: [42, 48] + [?]
+
+Choices:
+
+  40
+
+  54
+
+  36  ← correct
+
+► 33
+
+Agent chose: 33  via unbiased    Correct: 36
+
+Episode 200
+
+Cross-Sequence
+
+Surface: numeric
+
+✗  WRONG
+
+Structural context (what the agent actually saw):
+
+class
+
+cross_sequence
+
+surface
+
+numeric
+
+c_trend
+
+up
+
+a_vs_b
+
+equal
+
+op_hint
+
+sub
+
+relationship
+
+between_series
+
+Problem:
+
+A: [2, 3, 5]
+
+B: [4, 3, 3]
+
+C: [-2, 0] + [?]
+
+Choices:
+
+  2  ← correct
+
+  8
+
+  0
+
+► 3
+
+Agent chose: 3  via unbiased    Correct: 2
+
+Episode 300
+
+Cross-Sequence
+
+Surface: numeric
+
+✗  WRONG
+
+Structural context (what the agent actually saw):
+
+class
+
+cross_sequence
+
+surface
+
+numeric
+
+c_trend
+
+up
+
+a_vs_b
+
+b_bigger
+
+op_hint
+
+mul
+
+relationship
+
+between_series
+
+Problem:
+
+A: [4, 2, 6]
+
+B: [3, 8, 5]
+
+C: [12, 16] + [?]
+
+Choices:
+
+  20
+
+  30  ← correct
+
+  32
+
+► 9
+
+Agent chose: 9  via unbiased    Correct: 30
+
+Episode 500
+
+Cross-Sequence
+
+Surface: numeric
+
+✗  WRONG
+
+Structural context (what the agent actually saw):
+
+class
+
+cross_sequence
+
+surface
+
+numeric
+
+c_trend
+
+up
+
+a_vs_b
+
+a_bigger
+
+op_hint
+
+add
+
+relationship
+
+between_series
+
+Problem:
+
+A: [5, 8, 8]
+
+B: [5, 4, 5]
+
+C: [10, 12] + [?]
+
+Choices:
+
+  11
+
+  13  ← correct
+
+► 14
+
+Agent chose: 14  via cme_weight_neg    Correct: 13
+
+
+
+
+What This Shows
+
+
+
+Code structure patterns: mastered at 100%. The structural features — dependency order, guard-before-use — are stable across surfaces. The Bandit learned them. When the surface changed from numeric to code representation, accuracy held. That is transfer. That is the invariant being learned, not the surface.
+
+The other four classes remain hard. Cross-sequence dependency requires computation — the agent must calculate A[n] OP B[n] to find the answer. The Bandit learns preferences, not arithmetic. Constraint satisfaction requires holding all three rules simultaneously and finding their intersection. Rule inversion requires detecting where a pattern breaks. These are genuinely hard problems. The agent is honest about that. It does not fake progress.
+
+This is the real test. A system that scores 100% on every class in 300 episodes is either cheating or the test is too easy. A system that masters what it can structurally represent, struggles with what requires compute, and shows measurable improvement over time — that is a system learning real things.
+
+The agent never saw the rules. It saw structure. Where the structure was learnable by a Thompson Sampling bandit over structural features, it learned. Where it wasn't, it showed you exactly why.
+
+EmerEviro · IQ Pattern Observatory · SextBioRAG

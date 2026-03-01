@@ -1,0 +1,366 @@
+EMERVIRO
+
+Routed Cognitive Architecture — Evidence
+
+Pattern Class
+
+Cold Start
+
+Warm Start
+
+Delta
+
+Substrate
+
+What it does
+
+Constraint Satisfaction
+
+100%
+
+100%
+
++0%
+
+solver
+
+Satisfies all constraints globally
+
+Rule Inversion
+
+100%
+
+100%
+
++0%
+
+memory_probe
+
+Detects sequence inversion point
+
+Structural Analogy
+
+98%
+
+98%
+
++0%
+
+decomposer
+
+Decomposes compound transform
+
+Code Structure
+
+65%
+
+93%
+
++28%
+
+bandit
+
+Thompson Sampling (learns)
+
+Cross-Sequence
+
+100%
+
+100%
+
++0%
+
+compute
+
+Finds hidden arithmetic op
+
+
+
+Five hard IQ pattern classes  ·  SextBioRAG + CognitiveRouter + 4 Substrates
+
+200 episodes cold  →  memory saved as glyphs + cards  →  200 episodes warm
+
+Code structure: +28% on warm start  ·  Substrate classes: unchanged (compute, not learn)
+
+
+
+
+Persistent Memory
+
+
+
+After each run, the agent writes its learned state to disk as Glyphs (structural invariants) and Cards (high-salience episodes). On the next run it reloads — bandit posteriors, hippocampal traces, and all learned action preferences warm-started from prior experience.
+
+Glyphs — What Was Learned
+
+One glyph per pattern class. Each encodes the structural invariant discovered through experience.
+
+g-cross-sequence@1.0.0
+
+Cross Sequence Rule
+
+Acc: 100%
+
+compute
+
+C[n] = A[n] OP B[n]. Operation discovered by testing add/subtract/multiply/parity against known C values.
+
+
+
+g-constraint-sat@1.0.0
+
+Constraint Satisfaction Rule
+
+Acc: 100%
+
+solver
+
+One answer satisfies ALL constraints simultaneously. Parse constraints, evaluate every choice globally.
+
+
+
+g-rule-inversion@1.0.0
+
+Rule Inversion Detection
+
+Acc: 100%
+
+memory_probe
+
+Sequence follows rule R then inverts. Detect by delta sign change. Post-inversion delta extrapolates answer.
+
+
+
+g-structural-analogy@1.0.0
+
+Structural Analogy Transform
+
+Acc: 98%
+
+decomposer
+
+Transform is compound (×m+c, x²+c, -x+c). Decompose from A→B, apply identically to C.
+
+
+
+g-code-pattern@1.0.0
+
+Code Structure Invariant
+
+Acc: 65%→92%
+
+bandit
+
+Structural programming invariants. Stable across surfaces. Bandit learns from binary feedback — benefits from warm start.
+
+
+
+
+
+What Changed Between Runs
+
+The substrate classes (compute, solver, decomposer, memory_probe) show no change between runs because they do not learn — they compute. The Bandit is the only substrate that accumulates experience, so it is the only one that benefits from warm-start memory.
+
+Class
+
+Cold
+
+Warm
+
+Why
+
+Constraint Satisfaction
+
+100%
+
+100%
+
+Compute substrate — no learning, same result every time
+
+Rule Inversion
+
+100%
+
+100%
+
+Compute substrate — no learning, same result every time
+
+Structural Analogy
+
+98%
+
+98%
+
+Compute substrate — no learning, same result every time
+
+Code Structure
+
+65%
+
+93%
+
+Bandit posteriors warm-started — learned action preferences transferred
+
+Cross-Sequence
+
+100%
+
+100%
+
+Compute substrate — no learning, same result every time
+
+
+
+
+Episode Traces
+
+What was given. Which substrate fired. What it computed. The receipt.
+
+Ep 1
+
+Constraint Satisfaction
+
+solver
+
+✓  CORRECT
+
+Find the value N where your function must:
+
+  • accept N inputs (N divisible by 2)
+
+  • produce output whose digits sum to 5
+
+  • return even count
+
+Substrate: choice=50 satisfies 3/3 constraints: ['divisible by 2', 'digit sum = 5', 'even number']
+
+ ○ 60
+
+ ► 50   ← correct
+
+ ○ 52
+
+ ○ 49
+
+
+
+Ep 5
+
+Cross-Sequence
+
+compute
+
+✓  CORRECT
+
+A: [3, 7, 6]
+
+B: [5, 3, 4]
+
+C: [8, 10] + [?]
+
+Substrate: A[n] add B[n] → 6 add 4 = 10
+
+ ○ 12
+
+ ○ 9
+
+ ► 10   ← correct
+
+ ○ 13
+
+
+
+Ep 10
+
+Cross-Sequence
+
+compute
+
+✓  CORRECT
+
+A: [4, 2, 7]
+
+B: [5, 8, 6]
+
+C: [9, 10] + [?]
+
+Substrate: A[n] add B[n] → 7 add 6 = 13
+
+ ► 13   ← correct
+
+ ○ 11
+
+ ○ 10
+
+ ○ 9
+
+
+
+Ep 20
+
+Cross-Sequence
+
+compute
+
+✓  CORRECT
+
+A: [1, 5, 3]
+
+B: [2, 5, 4]
+
+C: [1, 0] + [?]
+
+Substrate: A[n] parity B[n] → 3 parity 4 = 1
+
+ ○ -2
+
+ ○ 3
+
+ ○ 4
+
+ ► 1   ← correct
+
+
+
+Ep 50
+
+Cross-Sequence
+
+compute
+
+✓  CORRECT
+
+A: [2, 3, 1]
+
+B: [6, 3, 7]
+
+C: [8, 6] + [?]
+
+Substrate: A[n] add B[n] → 1 add 7 = 8
+
+ ○ 4
+
+ ○ 10
+
+ ► 8   ← correct
+
+ ○ 3
+
+
+
+
+
+
+What This Means
+
+
+
+The persistent memory result is honest about what kind of system this is. The compute substrates (solver, decomposer, compute, memory_probe) do not improve with warm start because they do not learn — they reason. They will always get cross-sequence problems right from episode 1, regardless of prior runs, because the answer is computed, not recalled.
+
+The Bandit does improve. +28% on code structure patterns because it accumulated genuine action preferences across 200 episodes and brought them forward. Those posteriors represent real learned experience — which structural contexts map to which correct choices — and they transfer.
+
+This is the architecture working as designed: compute where compute is required, memory where memory is required, learning where learning is possible. Each component honest about its own nature.
+
+"Compute when compute is required. Memory when memory is required. The rest stays lean and honest."
+
+EmerEviro  ·  Routed Cognitive Architecture  ·  Evidence
