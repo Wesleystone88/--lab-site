@@ -52,27 +52,23 @@ See [docs/foundation/WHICH_DECK.md](docs/foundation/WHICH_DECK.md) for detailed 
 
 ### Get Started
 
-**For Conversation Management:**
-1. Browse [Conversation Grounding cards](decks/exploration/conversation-grounding-v1/cards/)
-2. Copy CARD-01 (Alignment Anchor) into your AI chat
-3. Fill in your current conversation goal
-4. Add other cards as needed (no required order)
+The current public‑facing site is implemented as a React/Tailwind app located
+in the `noesis-lab` directory.  Everything under that folder is now considered
+the canonical application for this repository; older landing pages and the
+previous chat experiment have been deprecated and can be safely deleted.
 
-νόησις/
-├── decks/                          # All card decks
-│   ├── exploration/                # Exploration Mode
-│   │   └── conversation-grounding-v1/   # 13 cards for AI conversations
-│   ├── engineering/                # Engineering Mode
-│   │   ├── emergence-v0.1/         # 14 cards for system design
-│   │   └── canonical-v1.0/         # 12 cards for specifications
-│   └── templates/                  # Blank templates
-│
-├── tools/                          # Utilities
-│   ├── seed-generator.py           # Add/verify cryptographic seeds
-│   ├── view-graph.py               # Visualize card relationships
-│   └── noesis-graph-viewer.py      # Full graph viewer
-│
-├── docs/                           # Documentation
+To work on the website:
+
+```bash
+cd noesis-lab
+npm install        # install dependencies
+npm run dev         # start development server
+npm run build       # build production assets (output to frontend/dist)
+```
+
+Netlify is configured via `netlify.toml` at the repo root; the `base` is set
+to `noesis-lab` so the build command runs in that subdirectory.  Static assets
+and functions are published from `frontend/dist` and `netlify/functions`.
 │   ├── foundation/                 # Core specifications
 │   │   ├── POLICY.md              # Constitutional rules
 │   │   ├── SEED_SPEC.md           # Seeding system

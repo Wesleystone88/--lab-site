@@ -1,25 +1,26 @@
 # Netlify configuration for νόησις workspace
 
 [build]
-  # Publish from workspace root (where index.html lives)
-  publish = "."
-  
-  # No build needed - chat app uses import maps and loads from esm.sh CDN
-  command = ""
+  # Build configuration for the new noesis‑lab site.  The project lives in the
+  # `noesis-lab` subdirectory, so Netlify checks out the repo there before
+  # running the command.  Output is generated under `frontend/dist`, which is
+  # the folder we publish.
+  base = "noesis-lab"
+  command = "npm run build"
+  publish = "frontend/dist"
 
-# SPA-style routing for Chat app
+# SPA-style routing for the React app in noesis-lab.
 [[redirects]]
-  from = "/chat/*"
-  to = "/chat/index.html"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
 
-# Fallback to root index.html for other routes
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Security headers
+# Security headers applied to the new application
 [[headers]]
   for = "/*"
     [headers.values]
