@@ -9,9 +9,9 @@ A **portable markdown-based card system** for structuring AI conversations and s
 ### Dual Architecture
 
 **Core System** (markdown-based, no build):
-1. **Exploration Mode** ([Conversation Grounding Deck](decks/exploration/conversation-grounding-v1/)) — Everyday AI conversation management (13 cards, no order required)
-2. **Engineering Mode - Emergence** ([decks/engineering/emergence-v0.1/](decks/engineering/emergence-v0.1/)) — System design exploration (14 ordered cards, diagnostic gates)
-3. **Engineering Mode - Canonical** ([decks/engineering/canonical-v1.0/](decks/engineering/canonical-v1.0/)) — Authoritative specifications (12 ordered cards, strict gates)
+1. **Exploration Mode** ([Conversation Grounding Deck](research/decks/exploration/conversation-grounding-v1/)) — Everyday AI conversation management (13 cards, no order required)
+2. **Engineering Mode - Emergence** ([research/decks/engineering/emergence-v0.1/](research/decks/engineering/emergence-v0.1/)) — System design exploration (14 ordered cards, diagnostic gates)
+3. **Engineering Mode - Canonical** ([research/decks/engineering/canonical-v1.0/](research/decks/engineering/canonical-v1.0/)) — Authoritative specifications (12 ordered cards, strict gates)
 
 **Sidebar Applications** (React + Vite + Gemini):
 - Located in parallel workspaces: `copy-of-νόησις-chat/`, `noesis-workflow-engine-v0.1/`, `noesis-ram_-cognitive-memory-substrate/`
@@ -38,7 +38,7 @@ Every card has a `seed_identity` block with tamper-evident hash of its "spine" (
 - **Body**: Content, examples, notes (unseeded - can evolve freely)
 
 ### 4. Templates
-Templates are deck-agnostic ([decks/templates/](decks/templates/)). Usage strictness depends on deck mode.
+Templates are deck-agnostic ([research/decks/templates/](research/decks/templates/)). Usage strictness depends on deck mode.
 
 ---
 
@@ -104,27 +104,27 @@ npm run preview # Preview built version locally
 ### Starting a New Deck
 
 **Exploration Mode** (conversation management):
-1. Browse [cards](decks/exploration/conversation-grounding-v1/cards/)
+1. Browse [cards](research/decks/exploration/conversation-grounding-v1/cards/)
 2. Copy CARD-01 (Alignment Anchor) into your AI chat
 3. Fill in your current conversation goal
 4. Add other cards as needed (no required order)
 
 **Emergence Deck** (exploring ideas):
-1. Copy [PACKAGE_TEMPLATE.md](decks/templates/PACKAGE_TEMPLATE.md) → fill project class
-2. Copy [01_CARD-01_WRITE_UP_Raw_Narrative_Intake.md](decks/engineering/emergence-v0.1/cards/01_CARD-01_WRITE_UP_Raw_Narrative_Intake.md) → paste project narrative
+1. Copy [PACKAGE_TEMPLATE.md](research/decks/templates/PACKAGE_TEMPLATE.md) → fill project class
+2. Copy [01_CARD-01_WRITE_UP_Raw_Narrative_Intake.md](research/decks/engineering/emergence-v0.1/cards/01_CARD-01_WRITE_UP_Raw_Narrative_Intake.md) → paste project narrative
 3. Continue sequentially through cards (14 total: CARD-00 to CARD-13)
 4. Gates warn but don't block
 
 **Canonical Deck** (defining systems):
-1. Copy [PACKAGE_TEMPLATE.md](decks/templates/PACKAGE_TEMPLATE.md) → declare project envelope
-2. Copy [01_CARD-1_WRITE_UP_Narrative_Anchor.md](decks/engineering/canonical-v1.0/cards/01_CARD-1_WRITE_UP_Narrative_Anchor.md) → formalize intent
+1. Copy [PACKAGE_TEMPLATE.md](research/decks/templates/PACKAGE_TEMPLATE.md) → declare project envelope
+2. Copy [01_CARD-1_WRITE_UP_Narrative_Anchor.md](research/decks/engineering/canonical-v1.0/cards/01_CARD-1_WRITE_UP_Narrative_Anchor.md) → formalize intent
 3. Progress through 12 cards (CARD-0 to CARD-11)
 4. Gates block downstream work if violated
 
 ### Helping Fill an Existing Card
 1. Read `DeckMode` field to understand enforcement context
 2. Check `UpstreamCards` — read those first for context
-3. Use templates in [decks/templates/](decks/templates/) as guidance
+3. Use templates in [research/decks/templates/](research/decks/templates/) as guidance
 4. Fill CONTENT section with concrete, measurable content
 5. **No placeholders**: "TBD", "TODO", "see later" = violations
 
@@ -141,14 +141,14 @@ Check `Gate` section:
 ```bash
 # Add/verify cryptographic seeds on all cards
 cd noesis-workspace
-python tools/seed-generator.py add decks/engineering/emergence-v0.1/cards/
-python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/
+python research/tools/seed-generator.py add research/decks/engineering/emergence-v0.1/cards/
+python research/tools/seed-generator.py verify research/decks/engineering/emergence-v0.1/cards/
 
 # View card relationships and dependency graph
-python tools/view-graph.py .
+python research/tools/view-graph.py .
 
 # Check individual card
-python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/00_CARD-00_DECK_SCHEMA_Meta_Card.md
+python research/tools/seed-generator.py verify research/decks/engineering/emergence-v0.1/cards/00_CARD-00_DECK_SCHEMA_Meta_Card.md
 ```
 
 **When seeding is important**: Any time you edit card YAML front matter (dependencies, gates, ordering), re-run verification to detect tampering.
@@ -159,7 +159,7 @@ python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/00_
 
 ```
 noesis-workspace/
-├── decks/                          # All card decks
+├── research/decks/                          # All card decks
 │   ├── exploration/                # Exploration Mode
 │   │   └── conversation-grounding-v1/   # 13 cards for AI conversations
 │   ├── engineering/                # Engineering Mode
@@ -167,7 +167,7 @@ noesis-workspace/
 │   │   └── canonical-v1.0/         # 12 cards for specifications
 │   └── templates/                  # Blank templates
 │
-├── tools/                          # Utilities
+├── research/tools/                          # Utilities
 │   ├── seed-generator.py           # Add/verify cryptographic seeds
 │   ├── view-graph.py               # Visualize card relationships
 │   └── noesis-graph-viewer.py      # Full graph viewer
@@ -221,7 +221,7 @@ See [WHICH_DECK.md](docs/foundation/WHICH_DECK.md) for full guidance.
 - **Purpose**: AI conversation management, session continuity
 - **Ordering**: None required — use cards as needed
 - **Gates**: None (pure suggestions)
-- **Location**: [decks/exploration/conversation-grounding-v1/](decks/exploration/conversation-grounding-v1/)
+- **Location**: [research/decks/exploration/conversation-grounding-v1/](research/decks/exploration/conversation-grounding-v1/)
 
 Key cards:
 - CARD-01 (Alignment Anchor) — Current conversation goal
@@ -263,7 +263,7 @@ seed_identity:
 - **Spine** (seeded): Card ID, name, namespace, dependencies, gates — immutable identity
 - **Body** (unseeded): Content, examples, notes — can evolve freely
 
-**Tool**: [tools/seed-generator.py](tools/seed-generator.py) — Add/verify seeds, detect tampering
+**Tool**: [research/tools/seed-generator.py](research/tools/seed-generator.py) — Add/verify seeds, detect tampering
 
 ---
 
@@ -275,13 +275,13 @@ Generates and verifies cryptographic seeds for card identity.
 **Usage**:
 ```bash
 # Add seeds to all cards in a directory
-python tools/seed-generator.py add decks/engineering/emergence-v0.1/cards/
+python research/tools/seed-generator.py add research/decks/engineering/emergence-v0.1/cards/
 
 # Verify existing seeds
-python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/
+python research/tools/seed-generator.py verify research/decks/engineering/emergence-v0.1/cards/
 
 # Check single card
-python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/00_CARD-00_DECK_SCHEMA_Meta_Card.md
+python research/tools/seed-generator.py verify research/decks/engineering/emergence-v0.1/cards/00_CARD-00_DECK_SCHEMA_Meta_Card.md
 ```
 
 **What it does**:
@@ -303,10 +303,10 @@ Visualizes card relationships and dependency trees.
 **Usage**:
 ```bash
 # View all deck relationships from workspace root
-python tools/view-graph.py .
+python research/tools/view-graph.py .
 
 # Specify workspace path
-python tools/view-graph.py "c:\path\to\noesis-workspace"
+python research/tools/view-graph.py "c:\path\to\noesis-workspace"
 ```
 
 **Output**:
@@ -486,7 +486,7 @@ CARD-0 (PACKAGE) gates everything downstream.
 
 ## Content Quality Rules
 
-From [decks/templates/](decks/templates/):
+From [research/decks/templates/](research/decks/templates/):
 
 ### ✅ Concrete Content (Correct)
 ```
@@ -549,9 +549,9 @@ When content stabilizes in Emergence Deck, it may be promoted to Canonical:
 
 - Master decks: `noesis-emergence-deck-v0.1.md`, `noesis-canonical-deck-v1.0.md`
 - Emergence cards: `{number}_CARD-{id}_{NAME}_{description}.md`
-  - Example: [01_CARD-01_WRITE_UP_Raw_Narrative_Intake.md](decks/engineering/emergence-v0.1/cards/01_CARD-01_WRITE_UP_Raw_Narrative_Intake.md)
+  - Example: [01_CARD-01_WRITE_UP_Raw_Narrative_Intake.md](research/decks/engineering/emergence-v0.1/cards/01_CARD-01_WRITE_UP_Raw_Narrative_Intake.md)
 - Canonical cards: `{number}_CARD-{id}_{NAME}_{description}.md`
-  - Example: [01_CARD-1_WRITE_UP_Narrative_Anchor.md](decks/engineering/canonical-v1.0/cards/01_CARD-1_WRITE_UP_Narrative_Anchor.md)
+  - Example: [01_CARD-1_WRITE_UP_Narrative_Anchor.md](research/decks/engineering/canonical-v1.0/cards/01_CARD-1_WRITE_UP_Narrative_Anchor.md)
 
 ---
 
@@ -665,14 +665,14 @@ npm run dev  # Vite dev server on :5174 (auto-incremented)
 **Pattern 1: Edit card, verify seed**
 ```bash
 # Edit a card file (e.g., change dependencies, gate logic)
-nano decks/engineering/emergence-v0.1/cards/02_CARD-02_INTENT_Compiled_Meaning.md
+nano research/decks/engineering/emergence-v0.1/cards/02_CARD-02_INTENT_Compiled_Meaning.md
 
 # Verify seed hasn't been tampered with
-python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/02_CARD-02_INTENT_Compiled_Meaning.md
+python research/tools/seed-generator.py verify research/decks/engineering/emergence-v0.1/cards/02_CARD-02_INTENT_Compiled_Meaning.md
 ```
 
 **Pattern 2: Update card references in sidebar app**
-- Load card markdown from `decks/*/cards/*.md`
+- Load card markdown from `research/decks/*/cards/*.md`
 - Parse YAML front matter for metadata
 - Render body with `react-markdown` + KaTeX
 - Don't cache card content — apps should fetch fresh on each session
@@ -691,7 +691,7 @@ python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/02_
 
 ### Seed Verification Fails
 - **Cause**: Card YAML front matter was edited without re-running `seed-generator.py`
-- **Fix**: `python tools/seed-generator.py add decks/engineering/emergence-v0.1/cards/{card_file}` to regenerate seed
+- **Fix**: `python research/tools/seed-generator.py add research/decks/engineering/emergence-v0.1/cards/{card_file}` to regenerate seed
 - **Preventive**: Run verification after any `dependencies`, `gate`, or `ordering` field edits
 
 ### Vite App Won't Start
@@ -703,7 +703,7 @@ python tools/seed-generator.py verify decks/engineering/emergence-v0.1/cards/02_
 ### Card Dependencies Circular
 - **Symptom**: `view-graph.py` reports circular reference
 - **Fix**: Edit `dependencies.upstream` or `dependencies.downstream` to break cycle
-- **Validate**: Run `python tools/view-graph.py .` to confirm
+- **Validate**: Run `python research/tools/view-graph.py .` to confirm
 
 ### App Can't Load Card Content
 - **Cause 1**: Card file path in code is absolute instead of relative to workspace
@@ -732,7 +732,7 @@ When users create new decks from templates:
 - Follow naming convention: `{number}_CARD-{id}_...`
 - Update `namespace` field in YAML to avoid collisions
 - Increment version in `card.version` field
-- Re-run seeding: `python tools/seed-generator.py add {custom_deck_path}`
+- Re-run seeding: `python research/tools/seed-generator.py add {custom_deck_path}`
 
 ---
 
@@ -745,7 +745,7 @@ When users create new decks from templates:
 **Organizational Principle**: Like collectible card games maintain **clean file structure** between product assets and website presentation, this project separates concerns by directory:
 
 #### Product Assets (Core Card System)
-- **Location**: `decks/`, `templates/`, `docs/foundation/`
+- **Location**: `research/decks/`, `templates/`, `docs/foundation/`
 - **Nature**: Version-controlled markdown cards, templates, specifications
 - **Stability**: Cryptographically seeded, immutable spine, strict versioning
 - **Source of Truth**: These are the canonical card definitions
@@ -759,10 +759,10 @@ When users create new decks from templates:
 **File Structure Guidance**:
 ```
 noesis-workspace/
-├── decks/              # PRODUCT: Core card decks (source of truth)
+├── research/decks/              # PRODUCT: Core card decks (source of truth)
 ├── templates/          # PRODUCT: Blank card templates
 ├── docs/               # PRODUCT: Specifications
-├── tools/              # PRODUCT: Utilities
+├── research/tools/              # PRODUCT: Utilities
 ├── site/               # WEBSITE: noesis-lab.com files
 │   ├── index.html      #   - Landing page (can display cards)
 │   ├── content/        #   - Blog posts, tutorials
@@ -771,7 +771,7 @@ noesis-workspace/
 └── archive/            # Legacy versions
 ```
 
-**Key Principle**: Clean file organization - product files stay in `decks/` with version control and seeding, website files stay in `site/` for presentation. The website can freely display, embed, and showcase cards - the separation is organizational, not access-based.
+**Key Principle**: Clean file organization - product files stay in `research/decks/` with version control and seeding, website files stay in `site/` for presentation. The website can freely display, embed, and showcase cards - the separation is organizational, not access-based.
 
 This mirrors how Magic: The Gathering organizes card database files separately from Gatherer website files, or how Pokémon TCG maintains card data files separate from pokemon.com website code - but both websites display the cards.
 
@@ -798,3 +798,4 @@ Like collectible trading cards: you can share cards you have, but can't manufact
 
 Structure precedes automation.  
 Thinking is treated as engineering.
+
