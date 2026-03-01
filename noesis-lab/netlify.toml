@@ -1,0 +1,35 @@
+[build]
+  # Netlify site settings already set the base to the noesis-lab directory
+  # so the build runs from /opt/build/repo/noesis-lab.
+  # Ensure both root and frontend dependencies are installed before building.
+  command = "npm install && cd frontend && npm install && npm run build"
+  publish = "frontend/dist"
+
+[functions]
+  # when base = "noesis-lab", this path is relative to that directory
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+    [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/assets/*"
+    [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
