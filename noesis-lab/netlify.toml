@@ -1,7 +1,8 @@
 [build]
   # Netlify site settings already set the base to the noesis-lab directory
   # so the build runs from /opt/build/repo/noesis-lab.
-  command = "npm run build"
+  # Ensure both root and frontend dependencies are installed before building.
+  command = "npm install && cd frontend && npm install && npm run build"
   publish = "frontend/dist"
 
 [functions]
