@@ -1,12 +1,12 @@
 # Netlify configuration for νόησις workspace
 
 [build]
-  # Build configuration for the new noesis‑lab site.  The project lives in the
-  # `noesis-lab` subdirectory, so Netlify checks out the repo there before
-  # running the command.  Output is generated under `frontend/dist`, which is
-  # the folder we publish.
-  base = "noesis-lab"
-  command = "npm run build"
+  # Build configuration for the noesis-lab application.
+  # After reorganization, the app lives under apps/noesis-lab.
+  # Base directory is set to apps/noesis-lab, so build runs from there.
+  # Output is published from frontend/dist (relative to base).
+  base = "apps/noesis-lab"
+  command = "npm install && cd frontend && npm install && npm run build"
   publish = "frontend/dist"
 
 # SPA-style routing for the React app in noesis-lab.

@@ -1,22 +1,62 @@
-# νόησις — Conversation Structuring System
+# νόησις — Conversation Structuring System & Research Platform
 
 Author: Timothy Wesley Stone  
 License: Open / Shareable
 
-A portable, markdown-based card system that keeps AI conversations coherent across sessions by making decisions, questions, and structure explicit.
+A portable research platform combining:
+- **Product**: νóησις Lab — A React/Vite application for AI-driven research
+- **Research System**: Card-based markdown decks for structuring thinking and decisions
+- **Tools**: Graph visualization and cryptographic seeding systems
+
+---
+
+## Repository Organization
+
+This repository follows a professional organization scheme:
+
+```
+noesis-workspace/
+├── apps/
+│   └── noesis-lab/               # Main React/Vite application
+│       ├── frontend/             # Vite React app
+│       ├── netlify/functions/    # Serverless backend
+│       └── netlify.toml          # App-specific config
+│
+├── research/                      # Intellectual property & tools
+│   ├── decks/                    # νóησις card systems
+│   │   ├── engineering/
+│   │   ├── exploration/
+│   │   └── templates/
+│   └── tools/                    # Graph visualization, seeding, etc.
+│
+├── docs/                          # Project documentation
+│   ├── foundation/               # Core philosophy & governance
+│   ├── guides/                   # How-to & tutorials
+│   ├── api/                      # API documentation
+│   └── project/                  # History & decisions
+│
+├── archive/                       # Legacy & experiments
+│   ├── legacy/
+│   ├── experiments/
+│   ├── assets/
+│   └── do-not-use/
+│
+├── packages/                      # Shared libraries (future)
+└── infrastructure/                # DevOps & deployment (future)
+```
 
 ---
 
 ## What This Is
 
-νόησις (pronounced "noh-ay-sis") provides three complementary deck systems:
+νóησις provides three complementary deck systems for structuring thinking and decisions:
 
 ### **Exploration Mode**
-- **[Conversation Grounding Deck (v1.0)](decks/exploration/conversation-grounding-v1/)** — Everyday AI conversation management (13 cards)
+- **[Conversation Grounding Deck (v1.0)](research/decks/exploration/conversation-grounding-v1/)** — Everyday AI conversation management (13 cards)
 
 ### **Engineering Mode**
-- **[νόησις Emergence Deck (v0.1)](decks/engineering/emergence-v0.1/)** — Exploration, ideation, structural discovery (14 cards)
-- **[νόησις Canonical Deck (v1.0)](decks/engineering/canonical-v1.0/)** — Authoritative specification, long-term preservation (12 cards)
+- **[νóησις Emergence Deck (v0.1)](research/decks/engineering/emergence-v0.1/)** — Exploration, ideation, structural discovery (14 cards)
+- **[νóησις Canonical Deck (v1.0)](research/decks/engineering/canonical-v1.0/)** — Authoritative specification, long-term preservation (12 cards)
 
 Each card is:
 - ✅ A complete, portable markdown artifact
@@ -28,47 +68,43 @@ Each card is:
 
 ## Quick Start
 
-### Choose Your Mode
+### Working on the Web Application
 
-**Use Exploration Mode (Conversation Grounding) when:**
-- Managing any AI conversation
-- Preventing decisions from being re-litigated
-- Tracking open questions
-- Resuming sessions after context resets
-
-**Use Engineering Mode (Emergence) when:**
-- Exploring system design ideas
-- Requirements are fluid
-- Want fast momentum with light structure
-- Building specifications incrementally
-
-**Use Engineering Mode (Canonical) when:**
-- Defining production-ready systems
-- Sharing formal specifications
-- Ambiguity must be eliminated
-- Long-term preservation required
-
-See [docs/foundation/WHICH_DECK.md](docs/foundation/WHICH_DECK.md) for detailed guidance.
-
-### Get Started
-
-The current public‑facing site is implemented as a React/Tailwind app located
-in the `noesis-lab` directory.  Everything under that folder is now considered
-the canonical application for this repository; older landing pages and the
-previous chat experiment have been deprecated and can be safely deleted.
-
-To work on the website:
+The main application is located in `apps/noesis-lab/`:
 
 ```bash
-cd noesis-lab
-npm install        # install dependencies
-npm run dev         # start development server
-npm run build       # build production assets (output to frontend/dist)
+cd apps/noesis-lab
+npm install         # Install dependencies
+npm run dev         # Start Vite dev server (http://localhost:5173)
+npm run build       # Build for production (output to frontend/dist)
 ```
 
-Netlify is configured via `netlify.toml` at the repo root; the `base` is set
-to `noesis-lab` so the build command runs in that subdirectory.  Static assets
-and functions are published from `frontend/dist` and `netlify/functions`.
+**Deployment**: Netlify automatically rebuilds from the `main` branch using `netlify.toml` at the repo root.
+
+### Working with Research Decks
+
+Browse the three deck systems:
+- **Exploration**: `research/decks/exploration/conversation-grounding-v1/`
+- **Emergence**: `research/decks/engineering/emergence-v0.1/`
+- **Canonical**: `research/decks/engineering/canonical-v1.0/`
+
+### Using Tools
+
+Graph visualization and card seeding tools are located in `research/tools/`:
+
+```bash
+cd research/tools
+python view-graph.py .              # Visualize card relationships
+python seed-generator.py verify …   # Verify card integrity
+```
+
+See [research/tools/](research/tools/) and [docs/guides/](docs/guides/) for details.
+
+---
+
+## Documentation
+
+See [docs/foundation/WHICH_DECK.md](research/decks/) for guidance on choosing card systems and working with the platform.
 │   ├── foundation/                 # Core specifications
 │   │   ├── POLICY.md              # Constitutional rules
 │   │   ├── SEED_SPEC.md           # Seeding system
