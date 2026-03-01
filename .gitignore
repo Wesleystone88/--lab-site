@@ -1,2 +1,57 @@
-# Local Netlify folder
+# Dependencies & Package Managers
+node_modules/
+package-lock.json
+npmrc
+*.pem
+.pnp
+.pnp.js
+dist/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# Netlify
 .netlify
+netlify.toml.bak
+
+# Build Output
+dist/
+build/
+.next/
+out/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temp & Log Files
+*.log
+*.gz
+tmp/
+temp/
+*.tmp
+*~
+.DS_Store
+
+# Research Tools (optional: don't commit generated graphs unless intentional)
+research/tools/*.dot
+research/tools/*.png
+research/tools/*.svg
+
+# Platform-specific
+.venv/
+venv/
+*.egg-info/
