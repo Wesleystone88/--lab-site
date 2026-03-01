@@ -1,0 +1,13 @@
+{
+  "name": "noesis-lab",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Noesis Lab — νόησις Research Site",
+  "author": "Timothy Wesley Stone",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "preview": "cd frontend && npm run preview",
+    "install:all": "cd frontend && npm install"
+  }
+}
