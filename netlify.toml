@@ -3,9 +3,9 @@
 [build]
   # Build configuration for the noesis-lab application.
   # After reorganization, the app lives under apps/noesis-lab.
-  # Base directory is set to apps/noesis-lab, so build runs from there.
+  # Base directory is set to noesis-labupdate, so build runs from there.
   # Output is published from frontend/dist (relative to base).
-  base = "apps/noesis-lab"
+  base = "noesis-labupdate"
   command = "npm install && cd frontend && npm install && npm run build"
   publish = "frontend/dist"
 
