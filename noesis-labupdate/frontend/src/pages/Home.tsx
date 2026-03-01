@@ -87,15 +87,15 @@ export default function Home() {
         />
 
         <div className="relative z-10 text-center px-6 max-w-5xl mx-auto flex flex-col items-center">
-          
+
           <div className="mb-6 flex items-center gap-2 px-3 py-1 rounded-full border border-[#1e1e30] bg-[#0a0a0f]">
             <span className="w-2 h-2 rounded-full bg-[#7c6af7] animate-pulse" />
             <span className="font-mono text-[10px] uppercase tracking-wider text-[#8b8aaa]">System Online · Confirmed</span>
           </div>
 
-          <h1 
+          <h1
             className="font-display text-7xl md:text-9xl font-light tracking-tight mb-4"
-            style={{ 
+            style={{
               color: '#ffffff',
               background: 'linear-gradient(180deg, #ffffff 0%, #a8a8bb 100%)',
               WebkitBackgroundClip: 'text',
@@ -105,7 +105,7 @@ export default function Home() {
           >
             NOESIS
           </h1>
-          
+
           <div className="flex items-center gap-4 mb-8">
             <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#4a4960]" />
             <span className="font-mono text-sm uppercase tracking-[0.2em] text-[#7c6af7]">
@@ -167,7 +167,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
               { title: 'Honest Failure', desc: 'When the system fails, you know exactly which substrate failed and why. No silent drift.' },
@@ -200,28 +200,28 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <PillarCard 
-              num="01" icon={Database} title="Constrained Memory (CME)" 
+            <PillarCard
+              num="01" icon={Database} title="Constrained Memory (CME)"
               desc="Declarative rule memory with hard blocks. Acts as the factual grounding layer."
             />
-            <PillarCard 
-              num="02" icon={Network} title="Action Bandit" 
+            <PillarCard
+              num="02" icon={Network} title="Action Bandit"
               desc="Thompson Sampling. Handles procedural action selection under uncertainty."
             />
-            <PillarCard 
-              num="03" icon={Activity} title="Temporal Field (TFE)" 
+            <PillarCard
+              num="03" icon={Activity} title="Temporal Field (TFE)"
               desc="Time-aware staleness and recency weighting governing the decay of context."
             />
-            <PillarCard 
-              num="04" icon={Cpu} title="Prediction Error (PEE)" 
+            <PillarCard
+              num="04" icon={Cpu} title="Prediction Error (PEE)"
               desc="Computes dopaminergic surprise signals based on expectation vs actual outcomes."
             />
-            <PillarCard 
-              num="05" icon={BrainCircuit} title="Episodic Attractor (BioRAG)" 
+            <PillarCard
+              num="05" icon={BrainCircuit} title="Episodic Attractor (BioRAG)"
               desc="Hopfield attractor network. Stores and retrieves episodes via energy landscape dynamics."
             />
-            <PillarCard 
-              num="06" icon={Eye} title="Prefrontal Cortex (PFC)" 
+            <PillarCard
+              num="06" icon={Eye} title="Prefrontal Cortex (PFC)"
               desc="Impulse control and metacognitive self-calibration. Halts confident but wrong execution vectors."
             />
           </div>
@@ -244,9 +244,9 @@ export default function Home() {
               <div className="p-6 text-[#a8a8bb]">
                 <div className="mb-4">
                   <span className="text-[#5c5c77] block mb-1"># Problem given</span>
-                  <div>Series A: [6, 8, 6] <br/>Series B: [7, 6, 6] <br/>Series C: [42, 48, ?]</div>
+                  <div>Series A: [6, 8, 6] <br />Series B: [7, 6, 6] <br />Series C: [42, 48, ?]</div>
                 </div>
-                
+
                 <div className="mb-4 pl-4 border-l border-[#2a2a40]">
                   <span className="text-[#5c5c77] block mb-1"># Structure detected</span>
                   <div className="text-[#e8e6f0]">Class: <span className="text-[#7c6af7]">arithmetic dependency</span></div>
@@ -272,7 +272,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
           <div className="order-1 lg:order-2">
             <h2 className="font-display text-4xl md:text-5xl font-light text-[#e8e6f0] mb-6">
               Every answer comes with a receipt.
@@ -292,6 +292,20 @@ export default function Home() {
                 View 500+ Episode Traces <ChevronRight size={14} />
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Research Transparency / Disclaimer */}
+      <section className="py-12 border-t border-[#1e1e30]">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 opacity-60 hover:opacity-100 transition-opacity">
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#7c6af7] whitespace-nowrap">
+              Research Transparency
+            </div>
+            <p className="font-body text-xs font-light text-[#8b8aaa] leading-relaxed italic border-l border-[#1e1e30] pl-6">
+              Noesis Lab is a research-focused initiative aiming to build a new class of reasoning system. We do not promote "AGI" hype, nor do we intend to replace existing human expertise or systems. Our focus is on structural invariants, genuine experience, and honest failure modes.
+            </p>
           </div>
         </div>
       </section>
