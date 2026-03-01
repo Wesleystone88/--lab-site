@@ -55,3 +55,7 @@ research/tools/*.svg
 .venv/
 venv/
 *.egg-info/
+
+# Nested git repos (prevent ghost submodule re-addition)
+archive/legacy/legacy/noesis-workspace
+legacy/noesis-workspace
