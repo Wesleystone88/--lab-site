@@ -310,6 +310,31 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Name & Affiliation Notice */}
+      <section className="py-12 bg-[#080810]/50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-3xl border-l border-[#7c6af7]/30 pl-8">
+            <h3 className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#7c6af7] mb-6">
+              Name & Affiliation Notice
+            </h3>
+            <div className="space-y-4 font-body text-sm font-light text-[#8b8aaa] leading-relaxed">
+              <p>
+                The name <span className="text-[#e8e6f0] font-normal">νόησις</span> (Greek: noetic apprehension; direct intellectual insight) is used here in its original philosophical sense.
+              </p>
+              <p>
+                This project is not affiliated with, endorsed by, or connected to any commercial organizations or consultancies operating under the Latinized name “Noesis.”
+              </p>
+              <p>
+                We recognize that several such organizations provide excellent professional services in their respective domains. <span className="text-[#e8e6f0] font-normal">νόησις Lab</span> exists in a distinct context: as an independent research and experimental architecture focused on cognitive systems, reasoning substrates, and first-principles design.
+              </p>
+              <p className="text-[12px] opacity-70">
+                Similarity in etymology reflects a shared linguistic root, not a shared entity, offering, or market.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   )
 }
